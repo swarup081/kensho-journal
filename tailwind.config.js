@@ -7,16 +7,17 @@ module.exports = {
     theme: {
       extend: {
         colors: {
-          'background': '#F9F9F7',     // Our soft, off-white background
-          'brand-accent': '#D97706',  // Our warm, ochre accent color
-          'brand-text': '#2d2d2d',     // Our dark charcoal text
+          'brand-background': '#F9F9F7', // Soft off-white for light theme
+          'brand-card': '#FFFFFF',
+          'brand-text': '#2d2d2d',       // Dark charcoal text
+          'brand-accent-start': '#F59E0B', // Gold for gradient
+          'brand-accent-end': '#D946EF',   // Magenta for gradient
         },
         fontFamily: {
-          sans: ['Inter', 'sans-serif'], // Sets Inter as the default sans-serif font
-          serif: ['Lora', 'serif'],       // Sets Lora as the default serif font
+          sans: ['var(--font-inter)', 'sans-serif'],
+          serif: ['var(--font-lora)', 'serif'],
         },
       },
     },
     plugins: [],
   };
-  

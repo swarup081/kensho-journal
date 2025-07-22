@@ -1,5 +1,17 @@
+import { Inter, Lora } from 'next/font/google';
 import './globals.css';
 import Navbar from '../components/shared/Navbar';
+
+// Configure fonts
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
+
+const lora = Lora({
+  subsets: ['latin'],
+  variable: '--font-lora',
+});
 
 export const metadata = {
   title: 'Kensho Journal',
@@ -9,7 +21,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50">
+      <body className={`${inter.variable} ${lora.variable} font-sans bg-brand-background text-brand-text`}>
         <Navbar />
         <main>
           {children}
