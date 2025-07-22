@@ -2,12 +2,13 @@ import { Inter, Lora } from 'next/font/google';
 import './globals.css';
 import Navbar from '../components/shared/Navbar';
 
-// Configure fonts
+// Configure the Inter font
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
 });
 
+// Configure the Lora font
 const lora = Lora({
   subsets: ['latin'],
   variable: '--font-lora',
