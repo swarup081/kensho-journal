@@ -1,2 +1,21 @@
 @import "tailwindcss";
 
+
+
+/* --- ADD THESE STYLES --- */
+body {
+  background-image: url('/landing-background.jpg'); /* Adjust it for larger screen and this is the backgrpund of the landing page */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.element_box{
+  background-image: url('/element_box_background.png'); /* Adjust it for larger screen and this is the backgrpund of the landing page */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
