@@ -24,14 +24,13 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
             <Link 
               href="/sign-up" /* Link to the sign-up page */
-              className="w-full sm:w-auto bg-gradient-to-r from-yellow-400 to-purple-500 text-white font-semibold py-3 px-8 rounded-full shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300"
-            >
-              Start Your Free Trial
+              className="w-full sm:w-auto bg-gradient-to-r from-yellow-400 to-purple-500 text-white font-semibold py-3 px-8 rounded-full shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">
+                 Start Your Free Trial
             </Link>
             <Link 
               href="/learn-more" /* Link to the learn more page */
-              className="w-full sm:w-auto bg-gray-50/50 backdrop-blur-sm text-gray-700 font-semibold py-3 px-8 rounded-full shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-300 border border-gray-200/80"
-            > {/* hover effect need to chnage in term of colour */}
+              className="w-full sm:w-auto bg-gray-50/50 backdrop-blur-sm text-gray-700 font-semibold py-3 px-8 rounded-full shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-300 border border-gray-200/80 hover:bg-white/70 hover:border-gray-300/90"
+            >
               Learn More
             </Link>
           </div>
