@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { signin } from './actions';
 
 export default function SignInPage() {
   return (
@@ -8,7 +9,7 @@ export default function SignInPage() {
           <h1 className="text-2xl font-semibold text-gray-900">Kensho Journal</h1>
           <p className="text-gray-500 mt-2">Sign in to your account</p>
         </div>
-        <form className="space-y-6">
+        <form action={signin} className="space-y-4">
           <div>
             <input
               type="email"
@@ -29,15 +30,20 @@ export default function SignInPage() {
               required
             />
           </div>
+          <div className="text-right text-sm">
+            <Link href="/forgot-password" className="font-medium text-purple-600 hover:underline">
+                Forgot Password?
+            </Link>
+          </div>
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300"
+            className="w-full bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-3 rounded-lg shadow-md"
           >
             Sign In
           </button>
         </form>
         <p className="text-center text-sm text-gray-500">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href="/sign-up" className="font-medium text-purple-600 hover:underline">
             Sign Up
           </Link>

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { signup } from './actions';
 
 export default function SignUpPage() {
   return (
@@ -8,7 +9,17 @@ export default function SignUpPage() {
           <h1 className="text-2xl font-semibold text-gray-900">Kensho Journal</h1>
           <p className="text-gray-500 mt-2">Create your account</p>
         </div>
-        <form className="space-y-6">
+        <form action={signup} className="space-y-4">
+          <div>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              className="w-full px-4 py-3 border-b-2 border-gray-200 focus:outline-none focus:border-purple-500 transition-colors"
+              placeholder="Name"
+              required
+            />
+          </div>
           <div>
             <input
               type="email"
@@ -16,6 +27,16 @@ export default function SignUpPage() {
               name="email"
               className="w-full px-4 py-3 border-b-2 border-gray-200 focus:outline-none focus:border-purple-500 transition-colors"
               placeholder="Email"
+              required
+            />
+          </div>
+          <div>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              className="w-full px-4 py-3 border-b-2 border-gray-200 focus:outline-none focus:border-purple-500 transition-colors"
+              placeholder="Phone Number"
               required
             />
           </div>
