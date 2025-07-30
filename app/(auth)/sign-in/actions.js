@@ -1,10 +1,13 @@
+// app/(auth)/sign-in/actions.js
 'use server';
-import { supabase } from '@/lib/supabaseClient';
+
+import { createClient } from '@/lib/supabase/server'; // Correctly import the server client
 import { redirect } from 'next/navigation';
 
 export async function signin(formData) {
   const email = formData.get('email');
   const password = formData.get('password');
+  const supabase = createClient(); // Create an instance of the server client
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -12,10 +15,10 @@ export async function signin(formData) {
   });
 
   if (error) {
-    console.error('Sign-in Error:', error);
-    redirect('/sign-in?error=InvalidCredentials');
-    return;
+    // You can handle the error more gracefully here, e.g., return a message
+    console.error('Sign-in error:', error);
+    return redirect('/sign-in?message=Could not authenticate user');
   }
 
-  redirect('/journal');
+  return redirect('/dashboard');
 }
