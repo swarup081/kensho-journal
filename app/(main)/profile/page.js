@@ -35,7 +35,7 @@ const stats = {
 const TabButton = ({ label, icon: Icon, isActive, onClick }) => (
   <button
     onClick={onClick}
-    className={`relative flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50
+    className={`relative flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-colors duration-200 focus:outline-none
       ${isActive ? 'text-white' : 'text-gray-400 hover:bg-gray-800/50 hover:text-white'}
     `}
   >

@@ -2,20 +2,21 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useAnimationControls } from 'framer-motion';
 import { ArrowLeft, Lightbulb, MessageSquare, Bug, Star, ThumbsUp, Check } from 'lucide-react';
 
 // --- Reusable UI Components ---
 
-const ActionButton = ({ children, onClick, type = 'button', disabled = false }) => (
-  <button
+const ActionButton = ({ children, onClick, type = 'button', disabled = false, controls }) => (
+  <motion.button
+    animate={controls}
     type={type}
     onClick={onClick}
     disabled={disabled}
     className="font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-300 transform hover:-translate-y-0.5 bg-gradient-to-r from-purple-600 to-orange-400 text-white hover:shadow-lg disabled:bg-gray-600 disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none"
   >
     {children}
-  </button>
+  </motion.button>
 );
 
 const SelectionTile = ({ text, icon: Icon, iconColor, onClick, isSelected }) => (
@@ -85,12 +86,39 @@ const FeedbackPage = () => {
   const [comment, setComment] = useState('');
   const [categories, setCategories] = useState(new Set());
   const [canContact, setCanContact] = useState(false);
+  const [validationError, setValidationError] = useState('');
+
+  const controls = useAnimationControls();
 
   const totalSteps = 5;
 
-  const handleNext = () => setStep(prev => Math.min(prev + 1, totalSteps));
-  const handleBack = () => setStep(prev => Math.max(prev - 1, 1));
+  const handleNext = () => {
+    if (step === 2) {
+      const isInvalid = comment.trim() === '' || (feedbackType === 'General Feedback' && rating === 0);
+      if (isInvalid) {
+        setValidationError('Please provide a rating and a comment.');
+        controls.start({ x: [-5, 5, -5, 5, 0], transition: { duration: 0.4 } });
+        return;
+      }
+    }
+    if (step === 3) {
+      if (categories.size === 0) {
+        setValidationError('Please select at least one category.');
+        controls.start({ x: [-5, 5, -5, 5, 0], transition: { duration: 0.4 } });
+        return;
+      }
+    }
+    setValidationError('');
+    setStep(prev => Math.min(prev + 1, totalSteps));
+  };
+
+  const handleBack = () => {
+    setValidationError('');
+    setStep(prev => Math.max(prev - 1, 1));
+  };
+  
   const handleCategoryToggle = (category) => {
+    setValidationError('');
     setCategories(prev => {
       const newCategories = new Set(prev);
       newCategories.has(category) ? newCategories.delete(category) : newCategories.add(category);
@@ -103,9 +131,6 @@ const FeedbackPage = () => {
     console.log("Submitting feedback:", formData);
     handleNext();
   };
-
-  const isStep2Invalid = comment.trim() === '' || (feedbackType === 'General Feedback' && rating === 0);
-  const isStep3Invalid = categories.size === 0;
 
   const renderStepContent = () => {
     const motionProps = {
@@ -134,12 +159,12 @@ const FeedbackPage = () => {
               {feedbackType === 'General Feedback' && (
                 <div className="mt-8 text-center">
                   <p className="text-gray-400 mb-4">How would you rate your overall experience?</p>
-                  <StarRating rating={rating} setRating={setRating} />
+                  <StarRating rating={rating} setRating={(r) => {setRating(r); setValidationError('');}} />
                 </div>
               )}
               <textarea
                 className="w-full h-40 bg-gray-900/70 text-gray-200 p-4 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-                placeholder="Let your thoughts flow..." value={comment} onChange={(e) => setComment(e.target.value)}
+                placeholder="Let your thoughts flow..." value={comment} onChange={(e) => { setComment(e.target.value); setValidationError(''); }}
               />
             </div>
           )}
@@ -156,7 +181,7 @@ const FeedbackPage = () => {
           )}
           {step === 4 && (
             <div className="text-center">
-              <h2 className="text-2xl font-semibold text-gray-200">Help Us Understand</h2>
+              <h2 className="text-2xl font-semibold text-center text-gray-200">Help Us Understand</h2>
               <p className="mt-4 text-gray-400 max-w-md mx-auto">You're helping us build. A quick follow-up email helps us understand your unique perspective. Is it okay if we reach out?</p>
               <div className="mt-8 flex justify-between items-center max-w-sm mx-auto p-4 rounded-lg bg-gray-800/50">
                 <span className="font-semibold text-gray-300">Allow us to contact you via email</span>
@@ -168,8 +193,8 @@ const FeedbackPage = () => {
             <div className="text-center p-4">
                 <motion.div
                   initial={{ scale: 0.5, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1, y: [0, -10, 0] }}
-                  transition={{ duration: 1.5, ease: 'easeInOut', delay: 0.2, repeat: Infinity, repeatType: 'reverse' }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.2 }}
                   className="inline-block"
                 >
                   <ThumbsUp className="h-20 w-20 text-purple-400" />
@@ -228,24 +253,35 @@ const FeedbackPage = () => {
         </div>
         
         {step < 5 && (
-          <div className={`mt-8 flex ${step > 1 ? 'justify-between' : 'justify-end'} items-center`}>
-            {step > 1 && (
-              <button onClick={handleBack} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-semibold">
-                <ArrowLeft className="h-5 w-5" /> Back
-              </button>
-            )}
-            <ActionButton 
-              onClick={
-                step === 4 ? handleSubmit :
-                handleNext
-              } 
-              disabled={
-                (step === 2 && isStep2Invalid) ||
-                (step === 3 && isStep3Invalid)
-              }
-            >
-              {step === 4 ? 'Submit Feedback' : 'Next'}
-            </ActionButton>
+          <div className="mt-8 flex flex-col items-end">
+             <AnimatePresence>
+              {validationError && (
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 5 }}
+                  className="mb-4 text-red-400 font-semibold"
+                >
+                  {validationError}
+                </motion.p>
+              )}
+            </AnimatePresence>
+            <div className={`w-full flex ${step > 1 ? 'justify-between' : 'justify-end'} items-center`}>
+              {step > 1 && (
+                <button onClick={handleBack} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-semibold">
+                  <ArrowLeft className="h-5 w-5" /> Back
+                </button>
+              )}
+              <ActionButton 
+                onClick={
+                  step === 4 ? handleSubmit :
+                  handleNext
+                }
+                controls={controls}
+              >
+                {step === 4 ? 'Submit Feedback' : 'Next'}
+              </ActionButton>
+            </div>
           </div>
         )}
       </div>
