@@ -3,10 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Lightbulb, MessageSquare, Bug, Star, ThumbsUp, Check } from 'lucide-react';
 
-
-// After
-import { ArrowLeft, Lightbulb, MessageSquare, Bug, Star, Lotus, Check } from 'lucide-react';
 // --- Reusable UI Components ---
 
 const ActionButton = ({ children, onClick, type = 'button', disabled = false }) => (
@@ -65,7 +63,7 @@ const StarRating = ({ rating, setRating }) => (
 const ToggleSwitch = ({ checked, onChange }) => (
   <div
     onClick={() => onChange(!checked)}
-    className={`flex items-center w-14 h-8 rounded-full p-1 cursor-pointer transition-colors duration-300
+    className={`flex items-center w-14 h-8 flex-shrink-0 rounded-full p-1 cursor-pointer transition-colors duration-300
       ${checked ? 'bg-purple-600 justify-end' : 'bg-gray-700 justify-start'}
     `}
   >
@@ -105,6 +103,9 @@ const FeedbackPage = () => {
     console.log("Submitting feedback:", formData);
     handleNext();
   };
+
+  const isStep2Invalid = comment.trim() === '' || (feedbackType === 'General Feedback' && rating === 0);
+  const isStep3Invalid = categories.size === 0;
 
   const renderStepContent = () => {
     const motionProps = {
@@ -167,15 +168,11 @@ const FeedbackPage = () => {
             <div className="text-center p-4">
                 <motion.div
                   initial={{ scale: 0.5, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.2 }}
+                  animate={{ scale: 1, opacity: 1, y: [0, -10, 0] }}
+                  transition={{ duration: 1.5, ease: 'easeInOut', delay: 0.2, repeat: Infinity, repeatType: 'reverse' }}
                   className="inline-block"
                 >
-                    <div className="p-4 bg-gradient-to-br from-purple-500/10 to-purple-500/0 rounded-full">
-                        <div className="p-3 bg-purple-500/20 rounded-full">
-                            <Lotus className="h-16 w-16 text-purple-300" />
-                        </div>
-                    </div>
+                  <ThumbsUp className="h-20 w-20 text-purple-400" />
                 </motion.div>
               <motion.h2
                 initial={{ opacity: 0, y: 10 }}
@@ -237,7 +234,16 @@ const FeedbackPage = () => {
                 <ArrowLeft className="h-5 w-5" /> Back
               </button>
             )}
-            <ActionButton onClick={step === 4 ? handleSubmit : handleNext} disabled={step === 3 && categories.size === 0}>
+            <ActionButton 
+              onClick={
+                step === 4 ? handleSubmit :
+                handleNext
+              } 
+              disabled={
+                (step === 2 && isStep2Invalid) ||
+                (step === 3 && isStep3Invalid)
+              }
+            >
               {step === 4 ? 'Submit Feedback' : 'Next'}
             </ActionButton>
           </div>
