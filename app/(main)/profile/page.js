@@ -13,14 +13,15 @@ const user = {
   notifications: true,
 };
 
-// I've created these themed placeholder avatars for you. You don't need to upload anything.
 const defaultAvatars = [
-    'https://placehold.co/128x128/A78BFA/FFFFFF/png?text=K',
-    'https://placehold.co/128x128/F97316/FFFFFF/png?text=J',
-    'https://placehold.co/128x128/10B981/FFFFFF/png?text=S',
-    'https://placehold.co/128x128/3B82F6/FFFFFF/png?text=A',
-    'https://placehold.co/128x128/EC4899/FFFFFF/png?text=N',
-    'https://placehold.co/128x128/F59E0B/FFFFFF/png?text=H',
+    '/Avatar/male_avatar_for_kenshoprofile_1.png',
+    '/Avatar/female_avatar_for_kenshoprofile_1.png',
+    '/Avatar/male_avatar_for_kenshoprofile_2.png',
+    '/Avatar/female_avatar_for_kenshoprofile_2.png',
+    '/Avatar/male_avatar_for_kenshoprofile_3.png',
+    '/Avatar/female_avatar_for_kenshoprofile_3.png',
+    '/Avatar/male_avatar_for_kenshoprofile_4.png',
+    '/Avatar/female_avatar_for_kenshoprofile_4.png',
 ];
 
 const stats = {
@@ -83,7 +84,11 @@ const ActionButton = ({ children, ...props }) => (
 );
 
 // --- NEW Redesigned Avatar Management Modal ---
-const AvatarModal = ({ isOpen, onClose, currentAvatar, onAvatarSelect }) => (
+const AvatarModal = ({ isOpen, onClose, currentAvatar, onAvatarSelect, userName }) => {
+    const placeholderAvatar = `https://placehold.co/128x128/A78BFA/FFFFFF/png?text=${userName?.[0]}`;
+    const allAvatars = [placeholderAvatar, ...defaultAvatars];
+
+    return (
     <AnimatePresence>
         {isOpen && (
             <motion.div
@@ -115,7 +120,7 @@ const AvatarModal = ({ isOpen, onClose, currentAvatar, onAvatarSelect }) => (
                             <p className="text-sm text-gray-400 mt-4">Your current avatar</p>
                             <div className="mt-6 w-full space-y-3">
                                 <button className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-purple-600/80 hover:bg-purple-600 text-white font-semibold transition-colors">
-                                    <UploadCloud size={18} /> Upload Photo
+                                    <ImageIcon size={18} /> Upload Photo
                                 </button>
                                 <button className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-gray-700/50 hover:bg-gray-700 text-white font-semibold transition-colors">
                                     <Trash2 size={18} /> Remove Photo
@@ -126,7 +131,7 @@ const AvatarModal = ({ isOpen, onClose, currentAvatar, onAvatarSelect }) => (
                         <div className="p-6 bg-black/10 rounded-lg">
                             <h3 className="font-semibold text-white mb-4 text-center md:text-left">Or choose a new avatar</h3>
                             <div className="grid grid-cols-3 gap-4">
-                                {defaultAvatars.map(avatar => (
+                                {allAvatars.map(avatar => (
                                     <button key={avatar} onClick={() => onAvatarSelect(avatar)} className={`rounded-full ring-2 transition-all ${currentAvatar === avatar ? 'ring-purple-500' : 'ring-transparent hover:ring-gray-600'}`}>
                                         <img src={avatar} alt="Avatar option" className="rounded-full" />
                                     </button>
@@ -138,7 +143,7 @@ const AvatarModal = ({ isOpen, onClose, currentAvatar, onAvatarSelect }) => (
             </motion.div>
         )}
     </AnimatePresence>
-);
+)};
 
 
 // --- Main Profile Page Component ---
@@ -162,6 +167,7 @@ const ProfilePage = () => {
         onClose={() => setIsModalOpen(false)} 
         currentAvatar={userAvatar}
         onAvatarSelect={handleAvatarSelect}
+        userName={userName}
       />
       <div className="h-full p-4 sm:p-8 lg:p-12">
         <div className="max-w-4xl mx-auto">
