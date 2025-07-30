@@ -22,17 +22,12 @@ const ActionButton = ({ children, onClick, type = 'button', disabled = false, co
 const SelectionTile = ({ text, icon: Icon, iconColor, onClick, isSelected }) => (
   <button
     onClick={onClick}
-    className={`relative p-6 bg-black/20 rounded-lg text-center hover:bg-purple-600/20 border-2 transition-all duration-200
+    className={`p-6 bg-black/20 rounded-lg text-center hover:bg-purple-600/20 border-2 transition-all duration-200
       ${isSelected ? 'border-purple-500' : 'border-gray-800/50 hover:border-gray-700'}
     `}
   >
     <Icon className={`mx-auto h-8 w-8 ${iconColor}`} />
     <p className="mt-4 font-semibold text-gray-300">{text}</p>
-    {isSelected && (
-      <div className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-purple-500">
-        <Check className="h-3 w-3 text-white" />
-      </div>
-    )}
   </button>
 );
 
@@ -61,20 +56,32 @@ const StarRating = ({ rating, setRating }) => (
   </div>
 );
 
-const ToggleSwitch = ({ checked, onChange }) => (
-  <div
-    onClick={() => onChange(!checked)}
-    className={`flex items-center w-14 h-8 flex-shrink-0 rounded-full p-1 cursor-pointer transition-colors duration-300
-      ${checked ? 'bg-purple-600 justify-end' : 'bg-gray-700 justify-start'}
-    `}
-  >
-    <motion.div
-      layout
-      transition={{ type: "spring", stiffness: 700, damping: 30 }}
-      className="h-6 w-6 bg-white rounded-full shadow-md"
-    />
-  </div>
-);
+const ToggleSwitch = ({ checked, onChange }) => {
+  const switchVariants = {
+    on: { x: '1.25rem' },
+    off: { x: '0rem' },
+  };
+  const spring = {
+    type: "spring",
+    stiffness: 700,
+    damping: 30,
+  };
+  return (
+    <div
+      onClick={() => onChange(!checked)}
+      className={`flex items-center w-14 h-8 flex-shrink-0 rounded-full p-1 cursor-pointer transition-colors duration-300
+        ${checked ? 'bg-purple-600' : 'bg-gray-700'}
+      `}
+    >
+      <motion.div
+        variants={switchVariants}
+        animate={checked ? "on" : "off"}
+        transition={spring}
+        className="h-6 w-6 bg-white rounded-full shadow-md"
+      />
+    </div>
+  );
+};
 
 
 // --- Main Feedback Page Component ---
@@ -89,25 +96,27 @@ const FeedbackPage = () => {
   const [validationError, setValidationError] = useState('');
 
   const controls = useAnimationControls();
-
   const totalSteps = 5;
 
   const handleNext = () => {
     if (step === 2) {
-      const isInvalid = comment.trim() === '' || (feedbackType === 'General Feedback' && rating === 0);
-      if (isInvalid) {
+      if (feedbackType === 'General Feedback' && (comment.trim() === '' || rating === 0)) {
         setValidationError('Please provide a rating and a comment.');
         controls.start({ x: [-5, 5, -5, 5, 0], transition: { duration: 0.4 } });
         return;
       }
-    }
-    if (step === 3) {
-      if (categories.size === 0) {
-        setValidationError('Please select at least one category.');
+      if ((feedbackType === 'Feature Idea' || feedbackType === 'Bug Report') && comment.trim() === '') {
+        setValidationError('Please provide a detailed comment.');
         controls.start({ x: [-5, 5, -5, 5, 0], transition: { duration: 0.4 } });
         return;
       }
     }
+    if (step === 3 && categories.size === 0) {
+      setValidationError('Please select at least one category.');
+      controls.start({ x: [-5, 5, -5, 5, 0], transition: { duration: 0.4 } });
+      return;
+    }
+    
     setValidationError('');
     setStep(prev => Math.min(prev + 1, totalSteps));
   };
@@ -252,7 +261,8 @@ const FeedbackPage = () => {
           {renderStepContent()}
         </div>
         
-        {step < 5 && (
+        {/* UPDATED: Buttons now only appear from Step 2 onwards */}
+        {step > 1 && step < 5 && (
           <div className="mt-8 flex flex-col items-end">
              <AnimatePresence>
               {validationError && (
@@ -266,12 +276,10 @@ const FeedbackPage = () => {
                 </motion.p>
               )}
             </AnimatePresence>
-            <div className={`w-full flex ${step > 1 ? 'justify-between' : 'justify-end'} items-center`}>
-              {step > 1 && (
-                <button onClick={handleBack} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-semibold">
-                  <ArrowLeft className="h-5 w-5" /> Back
-                </button>
-              )}
+            <div className={`w-full flex justify-between items-center`}>
+              <button onClick={handleBack} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-semibold">
+                <ArrowLeft className="h-5 w-5" /> Back
+              </button>
               <ActionButton 
                 onClick={
                   step === 4 ? handleSubmit :
