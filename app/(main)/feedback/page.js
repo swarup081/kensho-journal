@@ -1,5 +1,6 @@
 'use client';
 
+import { submitFeedback } from './actions';
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence, useAnimationControls } from 'framer-motion';
@@ -135,11 +136,23 @@ const FeedbackPage = () => {
     });
   };
 
-  const handleSubmit = async () => {
-    const formData = { feedbackType, rating, comment, categories: Array.from(categories), canContact };
-    console.log("Submitting feedback:", formData);
-    handleNext();
-  };
+// Replace the existing handleSubmit function with this one
+const handleSubmit = async () => {
+  // Create a FormData object to send to the server action
+  const formData = new FormData();
+  formData.append('feedbackType', feedbackType);
+  formData.append('rating', rating);
+  formData.append('comment', comment);
+  // Convert the Set of categories into a JSON string
+  formData.append('categories', JSON.stringify(Array.from(categories)));
+  formData.append('canContact', canContact);
+
+  // Call the server action to save the data
+  await submitFeedback(formData);
+
+  // Proceed to the "Thank You" screen as before
+  handleNext();
+};
 
   const renderStepContent = () => {
     const motionProps = {
