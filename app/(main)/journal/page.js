@@ -2,19 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import InsightModal from '@/components/InsightModal'; // Make sure you have created InsightModal.js
+import InsightModal from '@/components/InsightModal';
 
-// --- High-quality demo data for frontend development ---
-const demoAnalysisResult = {
-  summary: "It sounds like you're navigating a period of significant personal growth, balancing the excitement of new opportunities with a natural sense of uncertainty.",
-  emotions: [
-    { "emotion": "Optimism", "score": 8 },
-    { "emotion": "Anxiety", "score": 5 },
-    { "emotion": "Curiosity", "score": 7 }
-  ],
-  keywords: ["new beginnings", "personal growth", "uncertainty", "opportunity", "reflection"],
-  insightfulQuestion: "I'm curious, what one small step could you take tomorrow that honors both your excitement and your need for stability?"
-};
+// --- NEW: Define the minimum word count for an entry ---
+const MIN_WORD_COUNT = 1; //this is only for devlopment before deplpyment, it will be set to 15 in production const MIN_WORD_COUNT = 15;
 
 const JournalPage = () => {
   const [entry, setEntry] = useState('');
@@ -34,11 +25,12 @@ const JournalPage = () => {
   }, []);
 
   const handleSaveEntry = async () => {
-    if (entry.trim() === '' || !user || isLoading || isSaving) return;
+    // The check for word count is now part of this condition
+    const wordCount = entry.trim().split(/\s+/).length;
+    if (wordCount < MIN_WORD_COUNT || !user || isLoading || isSaving) return;
 
     setIsSaving(true);
 
-    // Step 1: We still save the real entry to the database
     const { data, error } = await supabase
       .from('journal_entries')
       .insert([{ content: entry, user_id: user.id }])
@@ -51,19 +43,28 @@ const JournalPage = () => {
       return;
     }
 
-    // --- NEW: Simulate the AI analysis with a delay ---
+    // Using demo data for now
+    const demoAnalysisResult = {
+        summary: "It sounds like you're navigating a period of significant personal growth, balancing the excitement of new opportunities with a natural sense of uncertainty.",
+        emotions: [ { "emotion": "Optimism", "score": 8 }, { "emotion": "Anxiety", "score": 5 }, { "emotion": "Curiosity", "score": 7 } ],
+        keywords: ["new beginnings", "personal growth", "uncertainty", "opportunity", "reflection"],
+        insightfulQuestion: "I'm curious, what one small step could you take tomorrow that honors both your excitement and your need for stability?"
+    };
+
     setTimeout(() => {
-      // We pass the new entry's ID along with the demo data
       setAnalysisResult({ ...demoAnalysisResult, entryId: data.id });
       setIsModalOpen(true);
-      setEntry(''); // Clear the text area
+      setEntry('');
       setIsSaving(false);
-    }, 2000); // Simulate a 2-second analysis time
+    }, 2000);
   };
 
   const currentDate = new Date().toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   });
+
+  // --- NEW: A variable to check if the button should be enabled ---
+  const isSaveDisabled = isLoading || isSaving || entry.trim().split(/\s+/).length < MIN_WORD_COUNT;
 
   return (
     <>
@@ -93,13 +94,19 @@ const JournalPage = () => {
                   style={{ fontFamily: "'Lora', serif" }}
                 />
               </div>
-              <div className="p-4 bg-gray-900/40 border-t border-gray-700/50 flex justify-end">
+              <div className="p-4 bg-gray-900/40 border-t border-gray-700/50 flex justify-end items-center gap-4">
+                {/* --- NEW: A subtle message to guide the user --- */}
+                {entry.trim() && entry.trim().split(/\s+/).length < MIN_WORD_COUNT && (
+                    <p className="text-xs text-gray-500">
+                        Please write at least {MIN_WORD_COUNT} words to get an analysis.
+                    </p>
+                )}
                 <button
                   onClick={handleSaveEntry}
-                  disabled={isLoading || !entry.trim() || isSaving}
+                  disabled={isSaveDisabled}
                   className="bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSaving ? 'Analyzing...' : 'Save '}
+                  {isSaving ? 'Analyzing...' : 'Save & Analyze'}
                 </button>
               </div>
             </div>
