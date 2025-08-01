@@ -32,3 +32,13 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #718096; /* dark-gray-500 */
 }
+
+/* Add these new utility classes at the end of the file */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
