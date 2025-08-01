@@ -3,35 +3,35 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 
-export async function updateProfileName(newName) {
+export async function updateProfile(formData) {
   const supabase = createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: 'Unauthorized' };
 
-  if (!user) {
-    return { error: 'You must be logged in to update your profile.' };
-  }
+  const name = formData.get('name');
+  const avatar_url = formData.get('avatar_url');
 
-  // --- FIX: Update the name in two places for consistency ---
+  const updateData = {};
+  if (name) updateData.name = name;
+  if (avatar_url) updateData.avatar_url = avatar_url;
 
-  // 1. Update the public 'users' table
-  const { error: publicError } = await supabase
+  // Update the public profile table
+  const { error: profileError } = await supabase
     .from('users')
-    .update({ name: newName })
+    .update(updateData)
     .eq('id', user.id);
 
-  // 2. Update the user's metadata in the 'auth.users' table
-  const { error: authError } = await supabase.auth.updateUser({
-    data: { name: newName }
-  });
-
-  if (publicError || authError) {
-    console.error('Error updating name:', publicError || authError);
-    return { error: 'Could not update your name.' };
+  if (profileError) {
+    console.error('Profile update error:', profileError);
+    return { error: 'Failed to update profile.' };
   }
 
-  // Revalidate the profile page to ensure data is fresh
+  // Also update the user metadata in the auth table
+  if (name) {
+      await supabase.auth.updateUser({ data: { name: name } });
+  }
+
   revalidatePath('/profile');
-  
   return { success: true };
 }

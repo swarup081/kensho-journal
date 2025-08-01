@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react'; // Check icon is no longer needed
+import { X, Check } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
@@ -35,7 +35,7 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   
-  // State to ensure the chart only renders on the client
+  // State to ensure the chart only renders on the client, preventing errors
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
@@ -84,81 +84,70 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 30 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="w-full max-w-2xl bg-black/20 border border-gray-800/50 rounded-2xl shadow-2xl overflow-hidden"
+            className="w-full max-w-2xl bg-black/20 border border-gray-800/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
+            <header className="p-6 text-center border-b border-gray-800/50">
+                {/* --- THE FIX: Using the AI-generated title --- */}
+                <h1 className="text-2xl font-bold text-gray-100" style={{ fontFamily: "'Lora', serif" }}>
+                    {analysis.title || "Your Insight"}
+                </h1>
+                <p className="text-sm text-gray-500 mt-1">AI Analysis of your recent entry</p>
+                <button onClick={handleClose} className="absolute top-4 right-4 p-1 rounded-full text-gray-400 hover:bg-gray-800 transition-colors"><X size={20} /></button>
+            </header>
+
             <div className="p-8 space-y-8">
-              <div className="text-center">
-                <p className="text-xl md:text-2xl text-gray-200 italic" style={{ fontFamily: "'Lora', serif" }}>
-                  "{analysis.insightfulQuestion}"
-                </p>
-                
-                {/* --- REFINED INTERACTIVE REFLECTION --- */}
-                <div className="mt-6">
-                    <AnimatePresence mode="wait">
-                        {isReflecting ? (
-                            <motion.div 
-                                key="textarea"
-                                initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ opacity: 0 }}
-                                className="text-left"
-                            >
-                                <textarea
-                                    value={reflection}
-                                    onChange={(e) => setReflection(e.target.value)}
-                                    className="w-full h-24 bg-gray-900/70 text-gray-200 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-                                    placeholder="Your thoughts..."
-                                />
-                                <div className="flex justify-end mt-2">
-                                    <button onClick={handleSaveReflection} disabled={isSaving || isSaved} className={`flex items-center justify-center gap-2 font-semibold text-white py-2 px-4 rounded-lg transition-all duration-300 w-40 ${isSaved ? 'bg-purple-600' : 'bg-purple-600 hover:bg-purple-700'}`}>
-                                        <AnimatePresence mode="wait">
-                                            {isSaving ? <motion.span key="saving" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>Saving...</motion.span>
-                                            : isSaved ? <motion.span key="saved" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>Saved</motion.span>
-                                            : <motion.span key="save" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>Save Reflection</motion.span>}
-                                        </AnimatePresence>
-                                    </button>
-                                </div>
-                            </motion.div>
-                        ) : isSaved ? (
-                             <motion.div key="saved-confirmation" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="font-semibold text-purple-400 bg-purple-500/10 px-5 py-2 rounded-lg inline-block">
-                                Reflection Saved
-                            </motion.div>
-                        ) : (
-                            <motion.button 
-                                key="reflect"
-                                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                onClick={() => setIsReflecting(true)} 
-                                className="font-semibold text-gray-300 bg-gray-800/50 hover:bg-gray-800 px-5 py-2 rounded-lg transition-colors">
-                                Reflect on this
-                            </motion.button>
-                        )}
-                    </AnimatePresence>
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                      <h3 className="font-semibold text-purple-300">Summary</h3>
+                      <p className="text-gray-300 italic text-sm">"{analysis.summary}"</p>
+                       <h3 className="font-semibold text-purple-300 pt-4">Keywords & Themes</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.keywords.map(keyword => ( <span key={keyword} className="bg-gray-700/50 text-gray-300 text-xs font-semibold px-3 py-1 rounded-full">{keyword}</span> ))}
+                      </div>
+                  </div>
+                  <div className="bg-gray-900/40 p-4 rounded-xl">
+                      <h3 className="font-semibold text-purple-300 mb-2 text-center">Emotion Flow</h3>
+                      {isClient && <EmotionChart data={analysis.emotions} />}
+                  </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-gray-900/40 p-6 rounded-lg space-y-6">
-                  <div>
-                    <h3 className="font-semibold text-purple-300 mb-2">Summary</h3>
-                    <p className="text-gray-300 text-sm">"{analysis.summary}"</p>
+              <div className="text-center border-t border-gray-800/50 pt-8">
+                  <p className="text-lg text-gray-300 italic" style={{ fontFamily: "'Lora', serif" }}>
+                      "{analysis.insightfulQuestion}"
+                  </p>
+                  <div className="mt-6">
+                      <AnimatePresence mode="wait">
+                          {isReflecting ? (
+                              <motion.div key="textarea" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ opacity: 0 }} className="text-left">
+                                  <textarea
+                                      value={reflection}
+                                      onChange={(e) => setReflection(e.target.value)}
+                                      className="w-full h-24 bg-gray-900/70 text-gray-200 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                                      placeholder="Your thoughts..."
+                                  />
+                                  <div className="flex justify-end mt-2">
+                                      <button onClick={handleSaveReflection} disabled={isSaving || isSaved} className={`flex items-center justify-center gap-2 font-semibold text-white py-2 px-4 rounded-lg transition-all duration-300 w-40 ${isSaved ? 'bg-purple-600' : 'bg-purple-600 hover:bg-purple-700'}`}>
+                                          <AnimatePresence mode="wait">
+                                              {isSaving ? <motion.span key="saving" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>Saving...</motion.span>
+                                              : isSaved ? <motion.span key="saved" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>Saved!</motion.span>
+                                              : <motion.span key="save" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>Save Reflection</motion.span>}
+                                          </AnimatePresence>
+                                      </button>
+                                  </div>
+                              </motion.div>
+                          ) : isSaved ? (
+                              <motion.div key="saved-confirmation" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="font-semibold text-purple-400 bg-purple-500/10 px-5 py-2 rounded-lg inline-block">
+                                  Reflection Saved
+                              </motion.div>
+                          ) : (
+                              <motion.button key="reflect" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsReflecting(true)} className="font-semibold text-gray-300 bg-gray-800/50 hover:bg-gray-800 px-5 py-2 rounded-lg transition-colors">
+                                  Reflect on this
+                              </motion.button>
+                          )}
+                      </AnimatePresence>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-purple-300 mb-3">Keywords & Themes</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {analysis.keywords.map(keyword => ( <span key={keyword} className="bg-gray-700/50 text-gray-300 text-xs font-semibold px-3 py-1 rounded-full">{keyword}</span> ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-gray-900/40 p-6 rounded-lg">
-                  <h3 className="font-semibold text-purple-300 mb-2">Emotion Flow</h3>
-                  {isClient && <EmotionChart data={analysis.emotions} />}
-                </div>
               </div>
-            </div>
-            
-            <div className="p-4 bg-gray-900/40 border-t border-gray-800/50 flex justify-end">
-                <button onClick={handleClose} className="text-gray-300 bg-gray-800/50 hover:bg-gray-800 font-semibold px-6 py-2 rounded-lg transition-colors">
-                    Close
-                </button>
             </div>
           </motion.div>
         </motion.div>
