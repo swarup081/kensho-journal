@@ -1,54 +1,118 @@
+'use client';
+
 import Link from 'next/link';
+import { useState } from 'react';
 import { signin } from './actions';
+import { requestPasswordReset } from '../forgot-password/actions';
+import Modal from '@/components/shared/Modal';
 
 export default function SignInPage() {
+  const [isForgotModalOpen, setForgotModalOpen] = useState(false);
+  const [resetMessage, setResetMessage] = useState('');
+
+  const handleResetSubmit = async (formData) => {
+    const result = await requestPasswordReset(formData);
+    setResetMessage(result.message);
+  };
+  
+  const openModal = () => {
+    setResetMessage('');
+    setForgotModalOpen(true);
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-sm p-8 bg-white rounded-2xl shadow-lg space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-semibold text-gray-900">Kensho Journal</h1>
-          <p className="text-gray-500 mt-2">Sign in to your account</p>
-        </div>
-        <form action={signin} className="space-y-4">
-          <div>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full px-4 py-3 border-b-2 border-gray-200 focus:outline-none focus:border-purple-500 transition-colors"
-              placeholder="Email"
-              required
-            />
+    <>
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-sm p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg space-y-6">
+          <div className="text-center">
+            <h1 className="text-2xl font-semibold text-gray-900">Welcome Back</h1>
+            <p className="text-gray-500 mt-2">Sign in to continue to Kensho Journal</p>
           </div>
-          <div>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              className="w-full px-4 py-3 border-b-2 border-gray-200 focus:outline-none focus:border-purple-500 transition-colors"
-              placeholder="Password"
-              required
-            />
-          </div>
-          <div className="text-right text-sm">
-            <Link href="/forgot-password" className="font-medium text-purple-600 hover:underline">
+          <form action={signin} className="space-y-4">
+            <div>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                className="w-full px-4 py-3 border-b-2 bg-transparent border-gray-300 focus:outline-none focus:border-purple-500 transition-colors"
+                placeholder="Email"
+                required
+              />
+            </div>
+            <div>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                className="w-full px-4 py-3 border-b-2 bg-transparent border-gray-300 focus:outline-none focus:border-purple-500 transition-colors"
+                placeholder="Password"
+                required
+              />
+            </div>
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={openModal}
+                className="text-sm font-medium text-purple-600 hover:text-purple-800 hover:underline cursor-pointer"
+              >
                 Forgot Password?
+              </button>
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300"
+            >
+              Sign In
+            </button>
+          </form>
+          <p className="text-center text-sm text-gray-500">
+            <Link href="/sign-up" className="hover:text-purple-600 transition-colors duration-200">
+              Don't have an account?
             </Link>
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-3 rounded-lg shadow-md"
-          >
-            Sign In
-          </button>
-        </form>
-        <p className="text-center text-sm text-gray-500">
-          Don&apos;t have an account?{' '}
-          <Link href="/sign-up" className="font-medium text-purple-600 hover:underline">
-            Sign Up
-          </Link>
-        </p>
+          </p>
+        </div>
       </div>
-    </div>
+
+      {isForgotModalOpen && (
+        <Modal title="Reset Password" onClose={() => setForgotModalOpen(false)} size="md">
+          <div className="prose-lg text-left">
+            {resetMessage ? (
+              <div className="text-center space-y-4 p-4">
+                <h3 className="text-xl font-semibold text-gray-800">Request Sent</h3>
+                <p className="text-gray-600">{resetMessage}</p>
+                 <button
+                    onClick={() => setForgotModalOpen(false)}
+                    className="w-full mt-4 bg-gray-800 text-white font-semibold py-3 rounded-lg hover:bg-black transition-all"
+                  >
+                   Close
+                  </button>
+              </div>
+            ) : (
+              <form action={handleResetSubmit} className="space-y-6">
+                <div className="text-center">
+                  <p className="text-gray-600">Enter your account's email address and we will send a link to reset your password.</p>
+                </div>
+                <div>
+                  <input
+                    type="email"
+                    id="reset-email"
+                    name="email"
+                    className="w-full px-4 py-3 border-b-2 bg-transparent border-gray-300 focus:outline-none focus:border-purple-500 transition-colors"
+                    placeholder="Email Address"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg"
+                >
+                  Send Reset Link
+                </button>
+              </form>
+            )}
+          </div>
+        </Modal>
+      )}
+    </>
   );
 }
