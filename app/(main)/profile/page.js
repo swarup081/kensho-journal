@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { User, Settings, Edit3, Shield, Bell, BookOpen, Repeat, Zap, UploadCloud, Trash2, X, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { updateProfile } from './actions';
+import ProfileSkeleton from '@/components/ProfileSkeleton'; // Import the skeleton component
 
 // --- (Your other components like defaultAvatars, TabButton, InsightCard, etc., remain here unchanged) ---
 const defaultAvatars = [ '/Avatar/male_avatar_for_kenshoprofile_1.png', '/Avatar/female_avatar_for_kenshoprofile_1.png', '/Avatar/male_avatar_for_kenshoprofile_2.png', '/Avatar/female_avatar_for_kenshoprofile_2.png', '/Avatar/male_avatar_for_kenshoprofile_3.png', '/Avatar/female_avatar_for_kenshoprofile_3.png', '/Avatar/male_avatar_for_kenshoprofile_4.png', '/Avatar/female_avatar_for_kenshoprofile_4.png', ];
@@ -148,7 +149,7 @@ const ProfilePage = () => {
   
   const memberSince = user ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : '...';
 
-  if (loading) return <div className="h-full flex items-center justify-center"><p>Loading profile...</p></div>;
+  if (loading) return <ProfileSkeleton />; // Use the skeleton component here
 
   return (
     <>

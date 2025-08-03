@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import InsightModal from '@/components/InsightModal'; // This path is now correct for your structure
+import InsightModal from '@/components/InsightModal';
 
 const JournalPage = () => {
   const [entry, setEntry] = useState('');
@@ -22,31 +22,57 @@ const JournalPage = () => {
   }, []);
 
   const handleSaveEntry = async () => {
-    if (entry.trim() === '' || !user || isLoading || isSaving) return;
-    setIsSaving(true);
+    if (entry.trim() === '' || !user || isSaving) return;
+
+    setIsSaving(true); // This shows "Analyzing..." on the button
+
+    // --- THE FIX ---
+    // 1. Reset old data and open the modal IMMEDIATELY.
+    // Because `analysisResult` is null, the skeleton will show.
+    setAnalysisResult(null);
+    setIsModalOpen(true);
+
+    // 2. NOW, do the background work (saving to DB, calling AI).
     const { data, error } = await supabase
       .from('journal_entries')
       .insert([{ content: entry, user_id: user.id }])
       .select('id')
       .single();
+
     if (error) {
       console.error('Error saving entry:', error);
       setIsSaving(false);
+      setIsModalOpen(false); // Close modal on error
       return;
     }
+
+    // 3. Simulate the AI analysis time.
+    // In a real app, this would be your AI API call.
     const demoAnalysisResult = {
         summary: "It sounds like you're navigating a period of significant personal growth, balancing the excitement of new opportunities with a natural sense of uncertainty.",
         emotions: [ { "emotion": "Optimism", "score": 8 }, { "emotion": "Anxiety", "score": 5 }, { "emotion": "Curiosity", "score": 7 } ],
         keywords: ["new beginnings", "personal growth", "uncertainty", "opportunity", "reflection"],
-        insightfulQuestion: "I'm curious, what one small step could you take tomorrow that honors both your excitement and your need for stability?"
+        insightfulQuestion: "What one small step could you take tomorrow that honors both your excitement and your need for stability?"
     };
+
     setTimeout(() => {
+      // 4. Once the analysis is ready, update the state.
+      // The open modal will now re-render with the real data.
       setAnalysisResult({ ...demoAnalysisResult, entryId: data.id });
-      setIsModalOpen(true);
+      
       setEntry('');
-      setIsSaving(false);
-    }, 2000);
+      setIsSaving(false); // Reset the button text
+    }, 2500); // 2.5-second delay to make the skeleton visible
   };
+
+  // A handler to clean up state when the modal is closed.
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    // Use a timeout to prevent the content from disappearing before the closing animation finishes.
+    setTimeout(() => {
+      setAnalysisResult(null);
+    }, 300);
+  }
 
   const currentDate = new Date().toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
@@ -56,7 +82,7 @@ const JournalPage = () => {
     <>
       <InsightModal 
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+        onClose={handleCloseModal} 
         analysis={analysisResult} 
       />
       <div className="h-full p-4 sm:p-8 lg:p-12">
