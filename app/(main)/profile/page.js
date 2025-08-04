@@ -145,7 +145,26 @@ const ProfilePage = () => {
   };
 
   const handlePasswordReset = async () => { /* ... */ };
-  const handleNotificationToggle = async (isEnabled) => { /* ... */ };
+
+  const handleNotificationToggle = async (isEnabled) => {
+    if (!user) return;
+
+    // Optimistically update the UI first for a snappy feel
+    setProfile(prev => ({ ...prev, email_notifications_enabled: isEnabled }));
+
+    // Then, update the database in the background
+    const { error } = await supabase
+      .from('users')
+      .update({ email_notifications_enabled: isEnabled })
+      .eq('id', user.id);
+
+    if (error) {
+      console.error('Error updating notification settings:', error);
+      // If the update fails, revert the UI change and alert the user
+      setProfile(prev => ({ ...prev, email_notifications_enabled: !isEnabled }));
+      alert('Failed to update notification settings. Please try again.');
+    }
+  };
   
   const memberSince = user ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : '...';
 

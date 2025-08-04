@@ -57,32 +57,20 @@ const StarRating = ({ rating, setRating }) => (
   </div>
 );
 
-const ToggleSwitch = ({ checked, onChange }) => {
-  const switchVariants = {
-    on: { x: '1.25rem' },
-    off: { x: '0rem' },
-  };
-  const spring = {
-    type: "spring",
-    stiffness: 700,
-    damping: 30,
-  };
-  return (
-    <div
-      onClick={() => onChange(!checked)}
-      className={`flex items-center w-14 h-8 flex-shrink-0 rounded-full p-1 cursor-pointer transition-colors duration-300
-        ${checked ? 'bg-purple-600' : 'bg-gray-700'}
-      `}
-    >
-      <motion.div
-        variants={switchVariants}
-        animate={checked ? "on" : "off"}
-        transition={spring}
-        className="h-6 w-6 bg-white rounded-full shadow-md"
-      />
-    </div>
-  );
-};
+const ToggleSwitch = ({ checked, onChange }) => (
+  <div
+    onClick={() => onChange(!checked)}
+    className={`flex items-center w-14 h-8 flex-shrink-0 rounded-full p-1 cursor-pointer transition-colors duration-300 ${
+      checked ? 'bg-purple-600 justify-end' : 'bg-gray-700 justify-start'
+    }`}
+  >
+    <motion.div
+      layout
+      transition={{ type: 'spring', stiffness: 700, damping: 30 }}
+      className="h-6 w-6 bg-white rounded-full shadow-md"
+    />
+  </div>
+);
 
 
 // --- Main Feedback Page Component ---
