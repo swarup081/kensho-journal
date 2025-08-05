@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import InsightModal from '@/components/InsightModal';
+import PwaInstallPopup from '@/components/shared/PwaInstallPopup'; // <-- ADD THIS IMPORT
 
 const JournalPage = () => {
   const [entry, setEntry] = useState('');
@@ -13,7 +14,19 @@ const JournalPage = () => {
   const [analysisResult, setAnalysisResult] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // --- ADD THIS NEW STATE ---
+  const [showPwaPopup, setShowPwaPopup] = useState(false);
+  const [entryCount, setEntryCount] = useState(0);
+
   useEffect(() => {
+    // --- ADD THIS LOGIC ---
+    const checkEntryCount = () => {
+      // We use localStorage to persist the count across sessions
+      const count = parseInt(localStorage.getItem('kenshoEntryCount') || '0', 10);
+      setEntryCount(count);
+    };
+    checkEntryCount();
+    
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       setIsLoading(false); 
@@ -24,15 +37,10 @@ const JournalPage = () => {
   const handleSaveEntry = async () => {
     if (entry.trim() === '' || !user || isSaving) return;
 
-    setIsSaving(true); // This shows "Analyzing..." on the button
-
-    // --- THE FIX ---
-    // 1. Reset old data and open the modal IMMEDIATELY.
-    // Because `analysisResult` is null, the skeleton will show.
+    setIsSaving(true);
     setAnalysisResult(null);
     setIsModalOpen(true);
 
-    // 2. NOW, do the background work (saving to DB, calling AI).
     const { data, error } = await supabase
       .from('journal_entries')
       .insert([{ content: entry, user_id: user.id }])
@@ -42,12 +50,10 @@ const JournalPage = () => {
     if (error) {
       console.error('Error saving entry:', error);
       setIsSaving(false);
-      setIsModalOpen(false); // Close modal on error
+      setIsModalOpen(false);
       return;
     }
 
-    // 3. Simulate the AI analysis time.
-    // In a real app, this would be your AI API call.
     const demoAnalysisResult = {
         summary: "It sounds like you're navigating a period of significant personal growth, balancing the excitement of new opportunities with a natural sense of uncertainty.",
         emotions: [ { "emotion": "Optimism", "score": 8 }, { "emotion": "Anxiety", "score": 5 }, { "emotion": "Curiosity", "score": 7 } ],
@@ -56,23 +62,42 @@ const JournalPage = () => {
     };
 
     setTimeout(() => {
-      // 4. Once the analysis is ready, update the state.
-      // The open modal will now re-render with the real data.
       setAnalysisResult({ ...demoAnalysisResult, entryId: data.id });
-      
       setEntry('');
-      setIsSaving(false); // Reset the button text
-    }, 2500); // 2.5-second delay to make the skeleton visible
+      setIsSaving(false);
+    }, 2500);
   };
 
-  // A handler to clean up state when the modal is closed.
+  // --- REPLACE THE OLD handleCloseModal WITH THIS NEW VERSION ---
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    // Use a timeout to prevent the content from disappearing before the closing animation finishes.
     setTimeout(() => {
       setAnalysisResult(null);
+
+      // PWA Popup Logic
+      const newCount = entryCount + 1;
+      localStorage.setItem('kenshoEntryCount', newCount.toString());
+      setEntryCount(newCount);
+
+      const promptThresholds = [1, 5, 10, 16];
+      if (promptThresholds.includes(newCount)) {
+        // Check if user has permanently dismissed the popup
+        const dismissed = localStorage.getItem('pwaInstallDismissed');
+        if (!dismissed) {
+          setShowPwaPopup(true);
+        }
+      }
     }, 300);
   }
+
+  // --- ADD THIS NEW HANDLER ---
+  const handlePopupDismiss = (installed) => {
+    setShowPwaPopup(false);
+    if (installed) {
+      // If they installed, we don't need to ask again.
+      localStorage.setItem('pwaInstallDismissed', 'true');
+    }
+  };
 
   const currentDate = new Date().toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
@@ -85,6 +110,9 @@ const JournalPage = () => {
         onClose={handleCloseModal} 
         analysis={analysisResult} 
       />
+      {/* --- ADD THIS COMPONENT --- */}
+      <PwaInstallPopup show={showPwaPopup} onDismiss={handlePopupDismiss} />
+      
       <div className="h-full p-4 sm:p-8 lg:p-12">
         <div className="max-w-4xl mx-auto h-full flex flex-col">
           <header className="pb-6 border-b border-gray-700/50">
