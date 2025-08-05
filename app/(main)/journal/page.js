@@ -4,14 +4,17 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import InsightModal from '@/components/InsightModal';
 import PwaInstallPopup from '@/components/shared/PwaInstallPopup';
+// UPDATED: Corrected the import path using the '@/' alias
+import InsightModalSkeleton from '@/components/InsightModalSkeleton';
 
 const JournalPage = () => {
+  // ... component code remains the same
   const [entry, setEntry] = useState('');
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   
-  const [analysisResult, setAnalysisResult] = useState(null);
+  const [modalAnalysis, setModalAnalysis] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showPwaPopup, setShowPwaPopup] = useState(false);
   
@@ -28,7 +31,7 @@ const JournalPage = () => {
     if (entry.trim() === '' || !user || isSaving) return;
 
     setIsSaving(true);
-    setAnalysisResult(null);
+    setModalAnalysis(null); 
     setIsModalOpen(true);
 
     const { data, error } = await supabase
@@ -52,7 +55,7 @@ const JournalPage = () => {
     };
 
     setTimeout(() => {
-      setAnalysisResult({ ...demoAnalysisResult, entryId: data.id });
+      setModalAnalysis({ ...demoAnalysisResult, entryId: data.id });
       setEntry('');
       setIsSaving(false);
     }, 2500);
@@ -61,8 +64,6 @@ const JournalPage = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setTimeout(() => {
-      setAnalysisResult(null);
-
       const alreadyInstalled = localStorage.getItem('pwaInstallCompleted');
       if (alreadyInstalled) return;
 
@@ -93,7 +94,9 @@ const JournalPage = () => {
       <InsightModal 
         isOpen={isModalOpen} 
         onClose={handleCloseModal} 
-        analysis={analysisResult} 
+        analysis={modalAnalysis} 
+        // Pass the skeleton as a fallback for when analysis is null
+        fallback={<InsightModalSkeleton />}
       />
       <PwaInstallPopup show={showPwaPopup} onDismiss={handlePopupDismiss} />
       <div className="h-full p-4 sm:p-8 lg:p-12">
@@ -120,7 +123,6 @@ const JournalPage = () => {
                 <button
                   onClick={handleSaveEntry}
                   disabled={isLoading || !entry.trim() || isSaving}
-                  // UPDATED: Removed hover effects
                   className="bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSaving ? 'Analyzing...' : 'Save & Analyze'}
