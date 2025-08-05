@@ -1,45 +1,84 @@
-import { verifyOtp } from './actions';
+'use client';
 
-export default function VerifyOtpPage({ searchParams }) {
-  const email = searchParams.email;
+import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { resendVerificationEmail } from './actions';
 
-  if (!email) {
-    return (
-      <div className="text-center p-8">
-        <p>Email not found. Please try signing up again.</p>
-      </div>
-    );
-  }
+export default function VerifyOtpPage() {
+  const searchParams = useSearchParams();
+  const email = searchParams.get('email');
+
+  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleResend = async (event) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setMessage('');
+    
+    const formData = new FormData(event.target);
+    const result = await resendVerificationEmail(formData);
+    
+    if (result.error) {
+      setMessage({ type: 'error', text: result.error });
+    } else {
+      setMessage({ type: 'success', text: result.success });
+    }
+    
+    setIsSubmitting(false);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-sm p-8 bg-white rounded-2xl shadow-lg space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-semibold text-gray-900">Verify Your Account</h1>
-          <p className="text-gray-500 mt-2">
-            Enter the 6-digit code sent to your email and phone.
+      <div className="w-full max-w-md p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg space-y-6 text-center">
+        <div>
+          {/* ICON DIV REMOVED */}
+          <h1 
+            className="text-3xl font-bold text-gray-900 font-lora" // Margin top removed for better spacing
+          >
+            Confirm Your Email
+          </h1>
+          <p className="text-gray-500 mt-3 leading-relaxed">
+            We've sent a verification link to your email address:
+          </p>
+          {email && (
+            <p className="font-semibold text-gray-800 mt-2 break-words">
+              {email}
+            </p>
+          )}
+          <p className="text-gray-500 mt-4">
+            Please click the link in that email to complete your sign-up. Once verified, you can sign in.
           </p>
         </div>
-        <form action={verifyOtp}>
-          <input type="hidden" name="email" value={email} />
-          <div className="space-y-4">
-            <input
-              type="text"
-              id="otp"
-              name="otp"
-              maxLength="6"
-              className="w-full text-center text-2xl tracking-widest px-4 py-3 border-b-2 border-gray-200 focus:outline-none focus:border-purple-500 transition-colors"
-              placeholder="_ _ _ _ _ _"
-              required
-            />
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-3 rounded-lg shadow-md"
+
+        {/* Resend Email Form */}
+        <form onSubmit={handleResend}>
+          <input type="hidden" name="email" value={email || ''} />
+          
+          {message && (
+            <p className={`text-sm font-semibold mt-4 ${message.type === 'error' ? 'text-red-500' : 'text-purple-600'}`}>
+              {message.text}
+            </p>
+          )}
+
+          <div className="text-center text-sm pt-4">
+            <span className="text-gray-500">Didn't receive an email? </span>
+            <button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="font-medium text-purple-600 hover:text-purple-800 hover:underline disabled:text-gray-400 disabled:cursor-not-allowed"
             >
-              Verify
+              {isSubmitting ? 'Sending...' : 'Resend link'}
             </button>
           </div>
         </form>
+        
+        <div className="pt-4 border-t border-gray-200">
+           <Link href="/sign-in" className="font-semibold text-gray-600 hover:text-gray-800 transition-colors">
+              &larr; Back to Sign In
+            </Link>
+        </div>
       </div>
     </div>
   );

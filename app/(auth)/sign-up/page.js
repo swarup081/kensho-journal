@@ -2,10 +2,13 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+// UPDATED: Import useSearchParams to correctly read URL parameters
+import { useSearchParams } from 'next/navigation';
 import { signup } from './actions';
 import Modal from '@/components/shared/Modal';
+import { AlertTriangle } from 'lucide-react'; // Import an icon for the error message
 
-// --- Content for the modals with final legal text ---
+// --- (Modal content components like TermsContent, etc., remain unchanged) ---
 const TermsContent = () => (
     <>
       <p className="lead"><strong>Last Updated:</strong> August 2, 2025</p>
@@ -142,6 +145,10 @@ const CookiesContent = () => (
 
 export default function SignUpPage() {
   const [openModal, setOpenModal] = useState(null);
+  
+  // UPDATED: Correctly get searchParams using the hook
+  const searchParams = useSearchParams();
+  const message = searchParams.get('message');
 
   const modalData = {
     terms: { title: 'Terms and Conditions', content: <TermsContent /> },
@@ -185,9 +192,16 @@ export default function SignUpPage() {
               </button>
               .
             </p>
+            {/* UPDATED: Redesigned error message UI */}
+            {message && (
+              <div className="flex items-start gap-3 text-sm font-semibold text-red-600 bg-red-500/10 p-3 rounded-lg border border-red-500/20">
+                <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                <span className="flex-1">{message}</span>
+              </div>
+            )}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300"
+              className="w-full bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-3 rounded-lg shadow-md transition-all duration-300"
             >
               Sign Up
             </button>

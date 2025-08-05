@@ -1,4 +1,3 @@
-// app/(auth)/sign-in/actions.js
 'use server';
 
 import { createClient } from '../../../lib/supabase/server';
@@ -16,9 +15,9 @@ export async function signin(formData) {
 
   if (error) {
     console.error('Sign-in error:', error);
-    return redirect('/sign-in?message=Could not authenticate user');
+    // UPDATED: Provide a more specific error message
+    return redirect('/sign-in?message=Invalid login credentials. Please try again.');
   }
 
-  // Changed this line from '/dashboard' to '/journal'
   return redirect('/journal');
 }
