@@ -4,11 +4,12 @@ import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { User, Settings, Edit3, Shield, Bell, BookOpen, Repeat, Zap, UploadCloud, Trash2, X, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { updateProfile } from './actions';
+// UPDATED: Import the requestPasswordReset action
+import { updateProfile, requestPasswordReset } from './actions';
 import ProfileSkeleton from '@/components/ProfileSkeleton';
 import PwaInstallButton from '@/components/shared/PwaInstallButton';
 
-// --- (Your other components like defaultAvatars, TabButton, InsightCard, etc., remain here unchanged) ---
+// --- (Other components like defaultAvatars, TabButton, etc. remain unchanged) ---
 const defaultAvatars = [ '/Avatar/male_avatar_for_kenshoprofile_1.png', '/Avatar/female_avatar_for_kenshoprofile_1.png', '/Avatar/male_avatar_for_kenshoprofile_2.png', '/Avatar/female_avatar_for_kenshoprofile_2.png', '/Avatar/male_avatar_for_kenshoprofile_3.png', '/Avatar/female_avatar_for_kenshoprofile_3.png', '/Avatar/male_avatar_for_kenshoprofile_4.png', '/Avatar/female_avatar_for_kenshoprofile_4.png', ];
 const TabButton = ({ label, icon: Icon, isActive, onClick }) => ( <button onClick={onClick} className={`relative flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-colors duration-200 focus:outline-none ${isActive ? 'text-white' : 'text-gray-400 hover:bg-gray-800/50 hover:text-white'}`}> <Icon className="h-5 w-5" /> <span>{label}</span> {isActive && <motion.div layoutId="activeTabIndicator" className="absolute -bottom-px left-0 right-0 h-0.5 bg-purple-500" />} </button> );
 const InsightCard = ({ icon: Icon, label, value, color }) => ( <div className="bg-black/10 p-6 rounded-2xl shadow-2xl border border-gray-800/50 flex items-center gap-5"> <div className={`p-3 rounded-lg bg-${color}-500/10`}> <Icon className={`h-6 w-6 text-${color}-400`} /> </div> <div> <p className="text-sm text-gray-400">{label}</p> <p className="text-3xl font-bold text-white">{value}</p> </div> </div>);
@@ -17,8 +18,8 @@ const ActionButton = ({ children, ...props }) => (<button {...props} className="
 const AvatarModal = ({ isOpen, onClose, currentAvatar, onAvatarSelect, userName, onFileUpload, onRemovePhoto, isUploading }) => { const fileInputRef = useRef(null); const placeholderAvatar = `https://placehold.co/128x128/A78BFA/FFFFFF/png?text=${userName?.[0] || 'K'}`; const allAvatars = [placeholderAvatar, ...defaultAvatars]; return ( <AnimatePresence> {isOpen && ( <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}> <motion.div initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }} transition={{ type: 'spring', stiffness: 300, damping: 30 }} className="bg-gray-900 border border-gray-700/50 rounded-2xl shadow-2xl w-full max-w-lg" onClick={(e) => e.stopPropagation()}> <div className="flex items-center justify-between p-6 border-b border-gray-700/50"> <h2 className="text-xl font-bold text-white">Edit Profile Picture</h2> <button onClick={onClose} className="p-1 rounded-full text-gray-400 hover:bg-gray-800"><X size={20} /></button> </div> <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6"> <div className="flex flex-col items-center justify-center bg-black/20 p-6 rounded-lg"> <img src={currentAvatar} alt="Current Avatar" className="h-32 w-32 rounded-full ring-4 ring-purple-500/30" /> <p className="text-sm text-gray-400 mt-4">Your current avatar</p> <div className="mt-6 w-full space-y-3"> <input type="file" ref={fileInputRef} onChange={onFileUpload} accept="image/png, image/jpeg" style={{ display: 'none' }} /> <button onClick={() => fileInputRef.current.click()} disabled={isUploading} className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-purple-600/80 hover:bg-purple-600 text-white font-semibold transition-colors disabled:opacity-50"> <ImageIcon size={18} /> {isUploading ? 'Uploading...' : 'Upload Photo'} </button> <button onClick={onRemovePhoto} disabled={isUploading} className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-gray-700/50 hover:bg-gray-700 text-white font-semibold transition-colors disabled:opacity-50"> <Trash2 size={18} /> Remove Photo </button> </div> </div> <div className="p-6 bg-black/10 rounded-lg"> <h3 className="font-semibold text-white mb-4 text-center md:text-left">Or choose a new avatar</h3> <div className="grid grid-cols-3 gap-4"> {allAvatars.map(avatar => ( <button key={avatar} onClick={() => onAvatarSelect(avatar)} className={`rounded-full ring-2 transition-all ${currentAvatar === avatar ? 'ring-purple-500' : 'ring-transparent hover:ring-gray-600'}`}> <img src={avatar} alt="Avatar option" className="rounded-full" /> </button> ))} </div> </div> </div> </motion.div> </motion.div> )} </AnimatePresence> )};
 
 
-// --- Main Profile Page Component ---
 const ProfilePage = () => {
+  // ... (all other state variables remain the same)
   const [activeTab, setActiveTab] = useState('profile');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -31,6 +32,7 @@ const ProfilePage = () => {
   const [passwordResetMessage, setPasswordResetMessage] = useState('');
   const [passwordResetError, setPasswordResetError] = useState(false);
 
+  // ... (useEffect and other functions remain the same)
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -145,7 +147,17 @@ const ProfilePage = () => {
       await handleAvatarSelect(placeholder);
   };
 
-  const handlePasswordReset = async () => { /* ... */ };
+
+  // UPDATED: Implemented the password reset logic
+  const handlePasswordReset = async () => {
+    setPasswordResetMessage('Sending...');
+    setPasswordResetError(false);
+    
+    const result = await requestPasswordReset();
+    
+    setPasswordResetMessage(result.message);
+    setPasswordResetError(!result.success);
+  };
 
   const handleNotificationToggle = async (isEnabled) => {
     if (!user) return;
@@ -168,6 +180,7 @@ const ProfilePage = () => {
 
   if (loading) return <ProfileSkeleton />;
 
+  // ... (the rest of the component's JSX remains the same)
   return (
     <>
       <AvatarModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} currentAvatar={profile.avatar_url} onAvatarSelect={handleAvatarSelect} userName={profile.name} onFileUpload={handleFileUpload} onRemovePhoto={handleRemovePhoto} isUploading={isUploading} />
