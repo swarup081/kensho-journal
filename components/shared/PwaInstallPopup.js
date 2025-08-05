@@ -1,23 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react'; // Import useContext
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, DownloadCloud } from 'lucide-react';
+import { PwaContext } from '@/app/context/PwaContext'; // Import our new context
 
 const PwaInstallPopup = ({ show, onDismiss }) => {
-  const [installPrompt, setInstallPrompt] = useState(null);
+  // Get the install prompt from the shared context
+  const { installPrompt } = useContext(PwaContext);
   const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (event) => {
-      event.preventDefault();
-      setInstallPrompt(event);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-  }, []);
-
+  // This effect now just checks if it *should* be visible
   useEffect(() => {
     setIsVisible(show && !!installPrompt);
   }, [show, installPrompt]);

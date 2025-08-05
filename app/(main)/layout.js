@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image'; // Import the Next.js Image component
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { BookText, CalendarDays, MessageSquare, User } from 'lucide-react';
+// CORRECTED: Use the '@/' alias to import from the 'app' directory
+import { PwaProvider } from '@/app/context/PwaContext';
 
 // NavLink component remains the same
 const NavLink = ({ href, icon: Icon, children }) => {
@@ -27,36 +29,33 @@ const NavLink = ({ href, icon: Icon, children }) => {
 
 export default function MainLayout({ children }) {
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex">
-      <aside className="w-20 lg:w-64 bg-black/20 flex flex-col p-4 border-r border-gray-800 transition-all duration-300">
-        {/* LOGO UPDATED HERE */}
-        <div className="mb-8 flex items-center justify-center lg:justify-start">
-          <Image 
-            src="/logo_background_light.png" 
-            alt="Kensho Journal Logo" 
-            width={40} 
-            height={40} 
-            className="rounded-md"
-          />
-          <span className="ml-3 text-xl font-bold hidden lg:inline">Kensho</span>
-        </div>
-
-        <nav className="flex flex-col">
-          <NavLink href="/journal" icon={BookText}>Journal</NavLink>
-          <NavLink href="/calendar" icon={CalendarDays}>Calendar</NavLink>
-          <NavLink href="/feedback" icon={MessageSquare}>Feedback</NavLink>
-        </nav>
-
-        <div className="flex-grow"></div> {/* Spacer */}
-
-        <div className="border-t border-gray-700/50 pt-4">
-          <NavLink href="/profile" icon={User}>Profile & Settings</NavLink>
-        </div>
-      </aside>
-
-      <main className="flex-1 overflow-y-auto">
-        {children}
-      </main>
-    </div>
+    <PwaProvider> {/* WRAP with PwaProvider */}
+      <div className="min-h-screen bg-gray-900 text-white flex">
+        <aside className="w-20 lg:w-64 bg-black/20 flex flex-col p-4 border-r border-gray-800 transition-all duration-300">
+          <div className="mb-8 flex items-center justify-center lg:justify-start">
+            <Image 
+              src="/logo_background_light.png" 
+              alt="Kensho Journal Logo" 
+              width={40} 
+              height={40} 
+              className="rounded-md"
+            />
+            <span className="ml-3 text-xl font-bold hidden lg:inline">Kensho</span>
+          </div>
+          <nav className="flex flex-col">
+            <NavLink href="/journal" icon={BookText}>Journal</NavLink>
+            <NavLink href="/calendar" icon={CalendarDays}>Calendar</NavLink>
+            <NavLink href="/feedback" icon={MessageSquare}>Feedback</NavLink>
+          </nav>
+          <div className="flex-grow"></div>
+          <div className="border-t border-gray-700/50 pt-4">
+            <NavLink href="/profile" icon={User}>Profile & Settings</NavLink>
+          </div>
+        </aside>
+        <main className="flex-1 overflow-y-auto">
+          {children}
+        </main>
+      </div>
+    </PwaProvider>
   );
 }

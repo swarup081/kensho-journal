@@ -1,36 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useContext } from 'react'; // Import useContext
+import { PwaContext } from '@/app/context/PwaContext'; // Import our new context
 
 const PwaInstallButton = () => {
-  const [installPrompt, setInstallPrompt] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (event) => {
-      event.preventDefault();
-      setInstallPrompt(event);
-      setIsVisible(true);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
-  }, []);
+  // Get the install prompt from the shared context
+  const { installPrompt } = useContext(PwaContext);
 
   const handleInstallClick = async () => {
     if (installPrompt) {
       await installPrompt.prompt();
-      const { outcome } = await installPrompt.userChoice;
-      if (outcome === 'accepted') {
-        setIsVisible(false);
-      }
+      // The logic to hide the button after will be handled by the browser
     }
   };
 
-  if (!isVisible) {
+  // If there's no install prompt, don't render anything
+  if (!installPrompt) {
     return null;
   }
 
