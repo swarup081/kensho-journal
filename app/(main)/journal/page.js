@@ -63,7 +63,6 @@ const JournalPage = () => {
     setTimeout(() => {
       setAnalysisResult(null);
 
-      // --- UPDATED: PWA Pop-up Trigger Logic ---
       const alreadyInstalled = localStorage.getItem('pwaInstallCompleted');
       if (alreadyInstalled) return;
 
@@ -81,7 +80,6 @@ const JournalPage = () => {
   const handlePopupDismiss = (installed) => {
     setShowPwaPopup(false);
     if (installed) {
-      // If they installed, set a flag to never show it again.
       localStorage.setItem('pwaInstallCompleted', 'true');
     }
   };
@@ -122,7 +120,8 @@ const JournalPage = () => {
                 <button
                   onClick={handleSaveEntry}
                   disabled={isLoading || !entry.trim() || isSaving}
-                  className="bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  // UPDATED: Removed hover effects
+                  className="bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSaving ? 'Analyzing...' : 'Save & Analyze'}
                 </button>
