@@ -124,21 +124,16 @@ const FeedbackPage = () => {
     });
   };
 
-// Replace the existing handleSubmit function with this one
 const handleSubmit = async () => {
-  // Create a FormData object to send to the server action
   const formData = new FormData();
   formData.append('feedbackType', feedbackType);
   formData.append('rating', rating);
   formData.append('comment', comment);
-  // Convert the Set of categories into a JSON string
   formData.append('categories', JSON.stringify(Array.from(categories)));
   formData.append('canContact', canContact);
 
-  // Call the server action to save the data
   await submitFeedback(formData);
 
-  // Proceed to the "Thank You" screen as before
   handleNext();
 };
 
@@ -192,7 +187,7 @@ const handleSubmit = async () => {
           {step === 4 && (
             <div className="text-center">
               <h2 className="text-2xl font-semibold text-center text-gray-200">Help Us Understand</h2>
-              <p className="mt-4 text-gray-400 max-w-md mx-auto">You're helping us build. A quick follow-up email helps us understand your unique perspective. Is it okay if we reach out?</p>
+              <p className="mt-4 text-gray-400 max-w-md mx-auto">You&apos;re helping us build. A quick follow-up email helps us understand your unique perspective. Is it okay if we reach out?</p>
               <div className="mt-8 flex justify-between items-center max-w-sm mx-auto p-4 rounded-lg bg-gray-800/50">
                 <span className="font-semibold text-gray-300">Allow us to contact you via email</span>
                 <ToggleSwitch checked={canContact} onChange={setCanContact} />
@@ -221,7 +216,7 @@ const handleSubmit = async () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.5 }}
                 className="mt-4 text-gray-400 max-w-md mx-auto">
-                  Your feedback is a seed of growth for our community's sanctuary. We are grateful for your time and your thoughtful perspective.
+                  Your feedback is a seed of growth for our community&apos;s sanctuary. We are grateful for your time and your thoughtful perspective.
               </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -262,7 +257,6 @@ const handleSubmit = async () => {
           {renderStepContent()}
         </div>
         
-        {/* UPDATED: Buttons now only appear from Step 2 onwards */}
         {step > 1 && step < 5 && (
           <div className="mt-8 flex flex-col items-end">
              <AnimatePresence>

@@ -23,7 +23,7 @@ export default function PrivacyPage() {
 
         <div className="space-y-6 text-gray-700 prose max-w-none">
           <p>
-            This Privacy Policy describes how Swarup Das (“we,” “us,” or “our”) collects, uses, and protects your information when you use the Kensho Journal Service, in compliance with applicable data protection laws including India's Digital Personal Data Protection (DPDP) Act, 2023.
+            This Privacy Policy describes how Swarup Das (“we,” “us,” or “our”) collects, uses, and protects your information when you use the Kensho Journal Service, in compliance with applicable data protection laws including India&apos;s Digital Personal Data Protection (DPDP) Act, 2023.
           </p>
 
           <h2 className="text-2xl font-semibold text-gray-900 mt-8">Information We Collect</h2>
@@ -39,12 +39,12 @@ export default function PrivacyPage() {
 
           <h2 className="text-2xl font-semibold text-gray-900 mt-8">Marketing and Communications</h2>
           <p>
-            By providing your email address, you agree that we may occasionally send you emails about Service updates, new features, or other information related to Kensho Journal. You may opt out of receiving these marketing communications at any time by clicking the "unsubscribe" link provided in every email or by contacting us directly. Please note that you may still receive essential transactional emails related to your account (e.g., password resets).
+            By providing your email address, you agree that we may occasionally send you emails about Service updates, new features, or other information related to Kensho Journal. You may opt out of receiving these marketing communications at any time by clicking the &quot;unsubscribe&quot; link provided in every email or by contacting us directly. Please note that you may still receive essential transactional emails related to your account (e.g., password resets).
           </p>
 
           <h2 className="text-2xl font-semibold text-gray-900 mt-8">Data Sharing and Third-Party Services</h2>
           <p>
-            We share data only with essential service providers ("Data Processors") who help us operate. We ensure our partners adhere to strict data protection standards.
+            We share data only with essential service providers (&quot;Data Processors&quot;) who help us operate. We ensure our partners adhere to strict data protection standards.
           </p>
           <ul>
             <li><strong>Supabase:</strong> For secure database hosting and authentication.</li>
@@ -53,7 +53,7 @@ export default function PrivacyPage() {
 
           <h2 className="text-2xl font-semibold text-gray-900 mt-8">Your Rights and Data Control</h2>
           <p>
-            As a "Data Principal" under the DPDP Act, you have rights over your personal data. For our MVP, these rights can be exercised by contacting us directly.
+            As a &quot;Data Principal&quot; under the DPDP Act, you have rights over your personal data. For our MVP, these rights can be exercised by contacting us directly.
           </p>
           <ul>
             <li><strong>Access and Correction:</strong> You may request access to or correction of your personal data.</li>
@@ -69,14 +69,14 @@ export default function PrivacyPage() {
             We retain your data only as long as necessary for the purpose for which it was collected. Upon a deletion request, we provide a 30-day grace period for account recovery. After this period, all your data is permanently deleted.
           </p>
 
-          <h2 className="text-2xl font-semibold text-gray-900 mt-8">Children's Privacy</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mt-8">Children&apos;s Privacy</h2>
           <p>
             Our Service is not intended for individuals under the age of 13. We do not knowingly collect personal data from children under 13. If we become aware that we have collected such data without verifiable parental consent, we will take steps to delete it immediately.
           </p>
 
           <h2 className="text-2xl font-semibold text-gray-900 mt-8">Compliance with Indian Law</h2>
           <p>
-            This policy is designed to comply with India's Digital Personal Data Protection (DPDP) Act, 2023. We act as the "Data Fiduciary" for your personal data. If you have a grievance, you may contact our designated contact person at kenshojournal.help@gmail.com.
+            This policy is designed to comply with India&apos;s Digital Personal Data Protection (DPDP) Act, 2023. We act as the &quot;Data Fiduciary&quot; for your personal data. If you have a grievance, you may contact our designated contact person at kenshojournal.help@gmail.com.
           </p>
 
           <h2 className="text-2xl font-semibold text-gray-900 mt-8">Changes to This Privacy Policy</h2>

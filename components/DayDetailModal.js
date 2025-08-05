@@ -5,13 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
-// Dynamically import the chart to prevent SSR errors
 const EmotionChart = dynamic(() => import('@/components/EmotionChart'), {
     ssr: false,
     loading: () => <div className="h-[150px] w-full flex items-center justify-center text-gray-500">Loading Chart...</div>
 });
 
-// --- Reusable Tab Button ---
 const TabButton = ({ label, isActive, onClick }) => (
     <button
         onClick={onClick}
@@ -29,7 +27,6 @@ const TabButton = ({ label, isActive, onClick }) => (
     </button>
 );
 
-// --- A component for each expandable journal entry ---
 const JournalEntryCard = ({ entry, demoAnalysis }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -39,7 +36,6 @@ const JournalEntryCard = ({ entry, demoAnalysis }) => {
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="w-full text-left p-4 flex justify-between items-center hover:bg-gray-800/50"
             >
-                {/* --- THE FIX: Using a grid layout to ensure the icon is always visible --- */}
                 <div className="grid grid-cols-[1fr,auto] items-center w-full gap-4">
                     <p className="text-gray-300 truncate font-medium">
                         <span className="text-purple-400 font-bold mr-2">
@@ -75,14 +71,14 @@ const JournalEntryCard = ({ entry, demoAnalysis }) => {
                                 {entry.ai_question_response && (
                                     <div>
                                         <h3 className="font-semibold text-purple-300">Your Reflection</h3>
-                                        <p className="text-gray-300 italic text-sm mt-2">"{entry.ai_question_response}"</p>
+                                        <p className="text-gray-300 italic text-sm mt-2">&quot;{entry.ai_question_response}&quot;</p>
                                     </div>
                                 )}
                             </div>
                             <div className="space-y-4">
                                 <div>
                                     <h3 className="font-semibold text-purple-300">AI Summary</h3>
-                                    <p className="text-gray-300 text-sm mt-2">"{entry.ai_summary || demoAnalysis.summary}"</p>
+                                    <p className="text-gray-300 text-sm mt-2">&quot;{entry.ai_summary || demoAnalysis.summary}&quot;</p>
                                 </div>
                                 <div>
                                     <h3 className="font-semibold text-purple-300">Emotion Flow</h3>
@@ -98,7 +94,6 @@ const JournalEntryCard = ({ entry, demoAnalysis }) => {
 };
 
 
-// --- The Main Daily Digest Modal Component ---
 export default function DayDetailModal({ entries, isOpen, onClose }) {
   const [activeTab, setActiveTab] = useState('summary');
 
@@ -155,7 +150,7 @@ export default function DayDetailModal({ entries, isOpen, onClose }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <h3 className="text-xl font-semibold text-purple-300 mb-2" style={{ fontFamily: "'Lora', serif" }}>Overall Summary</h3>
-                            <p className="text-gray-300 italic">"{dailyDemoAnalysis.summary}"</p>
+                            <p className="text-gray-300 italic">&quot;{dailyDemoAnalysis.summary}&quot;</p>
                         </div>
                         <div className="bg-gray-900/40 p-4 rounded-xl">
                             <h3 className="font-semibold text-purple-300 mb-2 text-center">Overall Emotion Flow</h3>

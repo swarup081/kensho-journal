@@ -9,7 +9,7 @@ import Modal from '@/components/shared/Modal';
 const TermsContent = () => (
     <>
       <p className="lead"><strong>Last Updated:</strong> August 2, 2025</p>
-      <p>These Terms and Conditions (“Terms”) constitute a legally binding agreement made between you, whether personally or on behalf of an entity (“you” or “User”), and <strong>Swarup Das</strong> (“we,” “us,” or “our”), concerning your access to and use of the Kensho Journal website and application (the “Service”).</p>
+      <p>These Terms and Conditions (&quot;Terms&quot;) constitute a legally binding agreement made between you, whether personally or on behalf of an entity (&quot;you&quot; or &quot;User&quot;), and <strong>Swarup Das</strong> (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), concerning your access to and use of the Kensho Journal website and application (the &quot;Service&quot;).</p>
       <p>By creating an account or using the Service, you agree that you have read, understood, and agree to be bound by all of these Terms.</p>
       
       <h3>Definitions</h3>
@@ -23,7 +23,7 @@ const TermsContent = () => (
       <h3>Intellectual Property Rights</h3>
       <p>The Service, Our Content, and our trademarks are our exclusive property, protected by copyright and other intellectual property laws. Except as expressly permitted by us in writing, you are strictly prohibited from copying, reproducing, distributing, selling, licensing, or otherwise exploiting any part of the Service or Our Content for any purpose.</p>
       
-      <h3>User Accounts & Data Ownership</h3>
+      <h3>User Accounts &amp; Data Ownership</h3>
       <p>You are responsible for maintaining the confidentiality of your account and password. You retain full ownership of your User Content. We do not claim any ownership rights over your data. However, to provide the Service, you grant us a limited, non-exclusive license to host, store, process, and display your User Content. This license is solely for the purpose of operating and improving the Service and terminates when you delete your account.</p>
       
       <h3>Acceptable Use of the Service</h3>
@@ -45,14 +45,14 @@ const TermsContent = () => (
       <ul>
           <li><strong>AI Features:</strong> The Service may use third-party AI models (e.g., from OpenAI) to generate insights. This content is for informational purposes only and is not professional advice. We are not liable for any errors, omissions, or actions taken based on AI-generated content.</li>
           <li><strong>Third-Party Services:</strong> The Service relies on third-party platforms like Supabase for backend infrastructure. We are not responsible for service interruptions or data security breaches originating from these third-party providers.</li>
-          <li><strong>"As-Is" Service:</strong> The Service is provided on an "as-is" basis. We are not liable for any direct, indirect, or consequential damages arising from your use of the Service.</li>
+          <li><strong>&quot;As-Is&quot; Service:</strong> The Service is provided on an &quot;as-is&quot; basis. We are not liable for any direct, indirect, or consequential damages arising from your use of the Service.</li>
       </ul>
 
       <h3>Termination</h3>
       <p>You may request account termination by emailing us at <strong>kenshojournal.help@gmail.com</strong>. We reserve the right to suspend or terminate your account if you violate these Terms.</p>
       
       <h3>Changes to These Terms</h3>
-      <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will notify you of any material changes by providing a <strong>prominent notice within the Service (such as a pop-up)</strong>. We will also update the "Last Updated" date at the top of these Terms. By continuing to access or use our Service after any revisions become effective, you agree to be bound by the revised terms.</p>
+      <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will notify you of any material changes by providing a <strong>prominent notice within the Service (such as a pop-up)</strong>. We will also update the &quot;Last Updated&quot; date at the top of these Terms. By continuing to access or use our Service after any revisions become effective, you agree to be bound by the revised terms.</p>
       
       <h3>Governing Law</h3>
       <p>These Terms are governed by the laws of India. Any disputes will be subject to the exclusive jurisdiction of the courts located in <strong>Silchar, Assam</strong>.</p>
@@ -67,7 +67,7 @@ const TermsContent = () => (
 const PrivacyContent = () => (
     <>
       <p className="lead"><strong>Last Updated:</strong> August 2, 2025</p>
-      <p>This Privacy Policy describes how <strong>Swarup Das</strong> (“we,” “us,” or “our”) collects, uses, and protects your information when you use the Kensho Journal Service, in compliance with applicable data protection laws including <strong>India's Digital Personal Data Protection (DPDP) Act, 2023.</strong></p>
+      <p>This Privacy Policy describes how <strong>Swarup Das</strong> (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects, uses, and protects your information when you use the Kensho Journal Service, in compliance with applicable data protection laws including <strong>India&apos;s Digital Personal Data Protection (DPDP) Act, 2023.</strong></p>
       
       <h3>Information We Collect</h3>
       <ul>
@@ -79,17 +79,17 @@ const PrivacyContent = () => (
       <p>Your information is used to provide, maintain, and improve the Service. We do not sell your personal data. By using the Service, you provide your consent for us to process your data for these specified purposes.</p>
       
       <h3>Marketing and Communications</h3>
-      <p>By providing your email address, you agree that we may occasionally send you emails about Service updates, new features, or other information related to Kensho Journal. You may opt out of receiving these marketing communications at any time by clicking the "unsubscribe" link provided in every email or by contacting us directly. Please note that you may still receive essential transactional emails related to your account (e.g., password resets).</p>
+      <p>By providing your email address, you agree that we may occasionally send you emails about Service updates, new features, or other information related to Kensho Journal. You may opt out of receiving these marketing communications at any time by clicking the &quot;unsubscribe&quot; link provided in every email or by contacting us directly. Please note that you may still receive essential transactional emails related to your account (e.g., password resets).</p>
       
       <h3>Data Sharing and Third-Party Services</h3>
-      <p>We share data only with essential service providers ("Data Processors") who help us operate. We ensure our partners adhere to strict data protection standards.</p>
+      <p>We share data only with essential service providers (&quot;Data Processors&quot;) who help us operate. We ensure our partners adhere to strict data protection standards.</p>
       <ul>
           <li><strong>Supabase:</strong> For secure database hosting and authentication.</li>
           <li><strong>OpenAI:</strong> To process your User Content for AI analysis features. <strong>We do not use your User Content or AI outputs for training third-party models. Your data is sent to OpenAI only for the purpose of generating your personalized insights and is not used to improve their AI systems.</strong></li>
       </ul>
 
       <h3>Your Rights and Data Control</h3>
-      <p>As a "Data Principal" under the DPDP Act, you have rights over your personal data. For our MVP, these rights can be exercised by contacting us directly.</p>
+      <p>As a &quot;Data Principal&quot; under the DPDP Act, you have rights over your personal data. For our MVP, these rights can be exercised by contacting us directly.</p>
       <ul>
           <li><strong>Access and Correction:</strong> You may request access to or correction of your personal data.</li>
           <li><strong>Data Portability:</strong> You may request an export of your User Content.</li>
@@ -100,11 +100,11 @@ const PrivacyContent = () => (
       <h3>Data Retention and Deletion</h3>
       <p>We retain your data only as long as necessary for the purpose for which it was collected. Upon a deletion request, we provide a <strong>30-day grace period</strong> for account recovery. After this period, all your data is permanently deleted.</p>
       
-      <h3>Children's Privacy</h3>
+      <h3>Children&apos;s Privacy</h3>
       <p>Our Service is not intended for individuals under the age of 13. We do not knowingly collect personal data from children under 13. If we become aware that we have collected such data without verifiable parental consent, we will take steps to delete it immediately.</p>
       
       <h3>Compliance with Indian Law</h3>
-      <p>This policy is designed to comply with India's Digital Personal Data Protection (DPDP) Act, 2023. We act as the "Data Fiduciary" for your personal data. If you have a grievance, you may contact our designated contact person at <strong>kenshojournal.help@gmail.com</strong>.</p>
+      <p>This policy is designed to comply with India&apos;s Digital Personal Data Protection (DPDP) Act, 2023. We act as the &quot;Data Fiduciary&quot; for your personal data. If you have a grievance, you may contact our designated contact person at <strong>kenshojournal.help@gmail.com</strong>.</p>
       
       <h3>Changes to This Privacy Policy</h3>
       <p>We may update this Privacy Policy from time to time. We will notify you of any changes <strong>by email and/or through a prominent notice within our Service</strong>. We will also update the “Last Updated” date at the top of this policy.</p>

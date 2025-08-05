@@ -23,7 +23,7 @@ export default function TermsPage() {
 
         <div className="space-y-6 text-gray-700 prose max-w-none">
           <p>
-            These Terms and Conditions (“Terms”) constitute a legally binding agreement made between you, whether personally or on behalf of an entity (“you” or “User”), and Swarup Das (“we,” “us,” or “our”), concerning your access to and use of the Kensho Journal website and application (the “Service”).
+            These Terms and Conditions (&quot;Terms&quot;) constitute a legally binding agreement made between you, whether personally or on behalf of an entity (&quot;you&quot; or &quot;User&quot;), and Swarup Das (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), concerning your access to and use of the Kensho Journal website and application (the &quot;Service&quot;).
           </p>
           <p>
             By creating an account or using the Service, you agree that you have read, understood, and agree to be bound by all of these Terms.
@@ -42,7 +42,7 @@ export default function TermsPage() {
             The Service, Our Content, and our trademarks are our exclusive property, protected by copyright and other intellectual property laws. Except as expressly permitted by us in writing, you are strictly prohibited from copying, reproducing, distributing, selling, licensing, or otherwise exploiting any part of the Service or Our Content for any purpose.
           </p>
 
-          <h2 className="text-2xl font-semibold text-gray-900 mt-8">User Accounts & Data Ownership</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mt-8">User Accounts &amp; Data Ownership</h2>
           <p>
             You are responsible for maintaining the confidentiality of your account and password. You retain full ownership of your User Content. We do not claim any ownership rights over your data. However, to provide the Service, you grant us a limited, non-exclusive license to host, store, process, and display your User Content. This license is solely for the purpose of operating and improving the Service and terminates when you delete your account.
           </p>
@@ -70,7 +70,7 @@ export default function TermsPage() {
           <ul>
             <li><strong>AI Features:</strong> The Service may use third-party AI models (e.g., from OpenAI) to generate insights. This content is for informational purposes only and is not professional advice. We are not liable for any errors, omissions, or actions taken based on AI-generated content.</li>
             <li><strong>Third-Party Services:</strong> The Service relies on third-party platforms like Supabase for backend infrastructure. We are not responsible for service interruptions or data security breaches originating from these third-party providers.</li>
-            <li><strong>"As-Is" Service:</strong> The Service is provided on an "as-is" basis. We are not liable for any direct, indirect, or consequential damages arising from your use of the Service.</li>
+            <li><strong>&quot;As-Is&quot; Service:</strong> The Service is provided on an &quot;as-is&quot; basis. We are not liable for any direct, indirect, or consequential damages arising from your use of the Service.</li>
           </ul>
 
           <h2 className="text-2xl font-semibold text-gray-900 mt-8">Termination</h2>
@@ -80,7 +80,7 @@ export default function TermsPage() {
 
           <h2 className="text-2xl font-semibold text-gray-900 mt-8">Changes to These Terms</h2>
           <p>
-            We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will notify you of any material changes by providing a prominent notice within the Service (such as a pop-up). We will also update the "Last Updated" date at the top of these Terms. By continuing to access or use our Service after any revisions become effective, you agree to be bound by the revised terms.
+            We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will notify you of any material changes by providing a prominent notice within the Service (such as a pop-up). We will also update the &quot;Last Updated&quot; date at the top of these Terms. By continuing to access or use our Service after any revisions become effective, you agree to be bound by the revised terms.
           </p>
 
           <h2 className="text-2xl font-semibold text-gray-900 mt-8">Governing Law</h2>

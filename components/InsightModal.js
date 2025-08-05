@@ -35,13 +35,11 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   
-  // State to ensure the chart only renders on the client, preventing errors
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Reset the modal's local state whenever a new analysis is passed in
   useEffect(() => {
     if (analysis) {
       setIsReflecting(false);
@@ -64,10 +62,9 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
     setIsSaving(false);
     if (!error) {
         setIsSaved(true);
-        // After saving is confirmed, close the reflection text area
         setTimeout(() => {
             setIsReflecting(false);
-        }, 1500); // Allow time to see the "Saved!" message
+        }, 1500);
     }
   };
 
@@ -88,7 +85,6 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
             onClick={(e) => e.stopPropagation()}
           >
             <header className="p-6 text-center border-b border-gray-800/50">
-                {/* --- THE FIX: Using the AI-generated title --- */}
                 <h1 className="text-2xl font-bold text-gray-100" style={{ fontFamily: "'Lora', serif" }}>
                     {analysis.title || "Your Insight"}
                 </h1>
@@ -100,8 +96,8 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-4">
                       <h3 className="font-semibold text-purple-300">Summary</h3>
-                      <p className="text-gray-300 italic text-sm">"{analysis.summary}"</p>
-                       <h3 className="font-semibold text-purple-300 pt-4">Keywords & Themes</h3>
+                      <p className="text-gray-300 italic text-sm">&quot;{analysis.summary}&quot;</p>
+                       <h3 className="font-semibold text-purple-300 pt-4">Keywords &amp; Themes</h3>
                       <div className="flex flex-wrap gap-2">
                         {analysis.keywords.map(keyword => ( <span key={keyword} className="bg-gray-700/50 text-gray-300 text-xs font-semibold px-3 py-1 rounded-full">{keyword}</span> ))}
                       </div>
@@ -114,7 +110,7 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
 
               <div className="text-center border-t border-gray-800/50 pt-8">
                   <p className="text-lg text-gray-300 italic" style={{ fontFamily: "'Lora', serif" }}>
-                      "{analysis.insightfulQuestion}"
+                      &quot;{analysis.insightfulQuestion}&quot;
                   </p>
                   <div className="mt-6">
                       <AnimatePresence mode="wait">

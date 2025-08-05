@@ -166,7 +166,7 @@ export default function Home() {
                     </motion.div>
                     <h2 className="text-4xl font-bold font-lora mt-6">Your Sanctuary is Sacred.</h2>
                     <p className="text-lg text-gray-600 mt-4 max-w-xl mx-auto">
-                        Privacy isn't an afterthought; it's our foundation. Your journal entries are yours alone. We believe in creating a safe, judgment-free space for your most important conversations.
+                        Privacy isn&apos;t an afterthought; it&apos;s our foundation. Your journal entries are yours alone. We believe in creating a safe, judgment-free space for your most important conversations.
                     </p>
                 </div>
 
@@ -174,7 +174,7 @@ export default function Home() {
                 <div className="w-full max-w-4xl text-center bg-white/70 backdrop-blur-xl p-16 rounded-3xl border border-gray-200/80 mb-20 shadow-xl">
                     <h2 className="text-5xl font-bold font-lora">Ready to Begin?</h2>
                     <p className="text-xl text-gray-600 mt-4 mb-10">
-                        Start your journey of self-discovery today. It's free.
+                        Start your journey of self-discovery today. It&apos;s free.
                     </p>
                     <Link
                         href="/sign-up"

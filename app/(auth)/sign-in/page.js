@@ -67,7 +67,7 @@ export default function SignInPage() {
           </form>
           <p className="text-center text-sm text-gray-500">
             <Link href="/sign-up" className="hover:text-purple-600 transition-colors duration-200">
-              Don't have an account?
+              Don&apos;t have an account?
             </Link>
           </p>
         </div>
@@ -90,7 +90,7 @@ export default function SignInPage() {
             ) : (
               <form action={handleResetSubmit} className="space-y-6">
                 <div className="text-center">
-                  <p className="text-gray-600">Enter your account's email address and we will send a link to reset your password.</p>
+                  <p className="text-gray-600">Enter your account&apos;s email address and we will send a link to reset your password.</p>
                 </div>
                 <div>
                   <input
