@@ -20,15 +20,6 @@ const JournalPage = () => {
       setUser(session?.user ?? null);
       setIsLoading(false); 
     });
-
-    const pwaDismissed = localStorage.getItem('pwaInstallDismissed');
-    if (!pwaDismissed) {
-      const timer = setTimeout(() => {
-        setShowPwaPopup(true);
-      }, 5000); // Show popup after 5 seconds
-      
-      return () => clearTimeout(timer);
-    }
     
     return () => subscription.unsubscribe();
   }, []);
@@ -71,12 +62,28 @@ const JournalPage = () => {
     setIsModalOpen(false);
     setTimeout(() => {
       setAnalysisResult(null);
+
+      // --- UPDATED: PWA Pop-up Trigger Logic ---
+      const alreadyInstalled = localStorage.getItem('pwaInstallCompleted');
+      if (alreadyInstalled) return;
+
+      const currentCount = parseInt(localStorage.getItem('insightClosedCount') || '0', 10);
+      const newCount = currentCount + 1;
+      localStorage.setItem('insightClosedCount', newCount.toString());
+
+      const promptThresholds = [1, 6, 15, 21];
+      if (promptThresholds.includes(newCount)) {
+        setShowPwaPopup(true);
+      }
     }, 300);
   }
   
   const handlePopupDismiss = (installed) => {
     setShowPwaPopup(false);
-    localStorage.setItem('pwaInstallDismissed', 'true');
+    if (installed) {
+      // If they installed, set a flag to never show it again.
+      localStorage.setItem('pwaInstallCompleted', 'true');
+    }
   };
 
   const currentDate = new Date().toLocaleDateString('en-US', {

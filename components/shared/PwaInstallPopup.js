@@ -1,16 +1,14 @@
 'use client';
 
-import { useState, useEffect, useContext } from 'react'; // Import useContext
+import { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, DownloadCloud } from 'lucide-react';
-import { PwaContext } from '@/app/context/PwaContext'; // Import our new context
+import { X } from 'lucide-react'; // Import X icon
+import { PwaContext } from '@/app/context/PwaContext';
 
 const PwaInstallPopup = ({ show, onDismiss }) => {
-  // Get the install prompt from the shared context
   const { installPrompt } = useContext(PwaContext);
   const [isVisible, setIsVisible] = useState(false);
 
-  // This effect now just checks if it *should* be visible
   useEffect(() => {
     setIsVisible(show && !!installPrompt);
   }, [show, installPrompt]);
@@ -18,7 +16,8 @@ const PwaInstallPopup = ({ show, onDismiss }) => {
   const handleInstall = async () => {
     if (!installPrompt) return;
     await installPrompt.prompt();
-    onDismiss(true);
+    const { outcome } = await installPrompt.userChoice;
+    onDismiss(outcome === 'accepted');
   };
   
   const handleDismiss = () => {
@@ -29,28 +28,52 @@ const PwaInstallPopup = ({ show, onDismiss }) => {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 50 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed bottom-6 right-6 z-50 w-full max-w-sm p-5 bg-gray-800 border border-gray-700/50 rounded-2xl shadow-2xl"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={handleDismiss} // Allow closing by clicking overlay
         >
-          <div className="flex items-start gap-4">
-            <div className="p-2 bg-purple-500/10 rounded-lg">
-              <DownloadCloud className="h-6 w-6 text-purple-400" />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            // UPDATED: New structure and styling to match other modals
+            className="w-full max-w-md bg-black/20 border border-gray-800/50 rounded-2xl shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <header className="p-6 text-center relative">
+              <h1 className="text-2xl font-bold text-gray-100" style={{ fontFamily: "'Lora', serif" }}>
+                Install Kensho Journal
+              </h1>
+              <p className="text-sm text-gray-400 mt-1">Get the best offline experience.</p>
+              <button onClick={handleDismiss} className="absolute top-4 right-4 p-1 rounded-full text-gray-400 hover:bg-gray-800 transition-colors">
+                <X size={20} />
+              </button>
+            </header>
+            
+            <div className="p-6 pt-0">
+                <p className="text-center text-gray-300 mb-6">
+                    For faster access and to use your journal even when you're offline, add Kensho to your home screen.
+                </p>
+                <div className="flex flex-col gap-3">
+                    <button 
+                        onClick={handleInstall} 
+                        className="w-full font-semibold bg-gradient-to-r from-purple-600 to-orange-400 text-white py-3 px-4 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300"
+                    >
+                        Install App
+                    </button>
+                    <button 
+                        onClick={handleDismiss} 
+                        className="w-full font-semibold text-gray-400 hover:bg-gray-800/50 py-3 px-4 rounded-lg transition-colors"
+                    >
+                        Maybe Later
+                    </button>
+                </div>
             </div>
-            <div className="flex-grow">
-              <h3 className="font-bold text-white">Install Kensho Journal</h3>
-              <p className="text-sm text-gray-400 mt-1">For a faster, offline-ready experience, add Kensho to your home screen.</p>
-              <div className="mt-4 flex gap-3">
-                <button onClick={handleInstall} className="w-full font-semibold bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition-colors">Install App</button>
-                <button onClick={handleDismiss} className="w-full font-semibold bg-gray-700/80 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors">Later</button>
-              </div>
-            </div>
-            <button onClick={handleDismiss} className="p-1 rounded-full text-gray-400 hover:bg-gray-600">
-              <X size={20} />
-            </button>
-          </div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
