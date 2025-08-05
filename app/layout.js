@@ -8,7 +8,7 @@ const lora = Lora({ subsets: ['latin'], variable: '--font-lora', weight: '700' }
 export const metadata = {
   title: 'Kensho Journal',
   description: 'The Journal That Talks Back.',
-  manifest: '/manifest.json'
+  manifest: '/manifest.json' // <-- This line is crucial
 };
 
 export default function RootLayout({ children }) {

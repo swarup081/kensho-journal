@@ -19,18 +19,17 @@ const PwaInstallPopup = ({ show, onDismiss }) => {
   }, []);
 
   useEffect(() => {
-    // Only become visible if the parent component wants to show it AND an install prompt is available
     setIsVisible(show && !!installPrompt);
   }, [show, installPrompt]);
 
   const handleInstall = async () => {
     if (!installPrompt) return;
     await installPrompt.prompt();
-    onDismiss(true); // Dismiss permanently after interaction
+    onDismiss(true);
   };
-
+  
   const handleDismiss = () => {
-    onDismiss(false); // Dismiss temporarily
+    onDismiss(false);
   };
 
   return (

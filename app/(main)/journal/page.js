@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import InsightModal from '@/components/InsightModal';
-import PwaInstallPopup from '@/components/shared/PwaInstallPopup'; // <-- ADD THIS IMPORT
+import PwaInstallPopup from '@/components/shared/PwaInstallPopup';
 
 const JournalPage = () => {
   const [entry, setEntry] = useState('');
@@ -13,15 +13,11 @@ const JournalPage = () => {
   
   const [analysisResult, setAnalysisResult] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // --- ADD THIS NEW STATE ---
   const [showPwaPopup, setShowPwaPopup] = useState(false);
   const [entryCount, setEntryCount] = useState(0);
 
   useEffect(() => {
-    // --- ADD THIS LOGIC ---
     const checkEntryCount = () => {
-      // We use localStorage to persist the count across sessions
       const count = parseInt(localStorage.getItem('kenshoEntryCount') || '0', 10);
       setEntryCount(count);
     };
@@ -68,20 +64,17 @@ const JournalPage = () => {
     }, 2500);
   };
 
-  // --- REPLACE THE OLD handleCloseModal WITH THIS NEW VERSION ---
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setTimeout(() => {
       setAnalysisResult(null);
 
-      // PWA Popup Logic
       const newCount = entryCount + 1;
       localStorage.setItem('kenshoEntryCount', newCount.toString());
       setEntryCount(newCount);
 
       const promptThresholds = [1, 5, 10, 16];
       if (promptThresholds.includes(newCount)) {
-        // Check if user has permanently dismissed the popup
         const dismissed = localStorage.getItem('pwaInstallDismissed');
         if (!dismissed) {
           setShowPwaPopup(true);
@@ -89,12 +82,10 @@ const JournalPage = () => {
       }
     }, 300);
   }
-
-  // --- ADD THIS NEW HANDLER ---
+  
   const handlePopupDismiss = (installed) => {
     setShowPwaPopup(false);
     if (installed) {
-      // If they installed, we don't need to ask again.
       localStorage.setItem('pwaInstallDismissed', 'true');
     }
   };
@@ -110,9 +101,7 @@ const JournalPage = () => {
         onClose={handleCloseModal} 
         analysis={analysisResult} 
       />
-      {/* --- ADD THIS COMPONENT --- */}
       <PwaInstallPopup show={showPwaPopup} onDismiss={handlePopupDismiss} />
-      
       <div className="h-full p-4 sm:p-8 lg:p-12">
         <div className="max-w-4xl mx-auto h-full flex flex-col">
           <header className="pb-6 border-b border-gray-700/50">

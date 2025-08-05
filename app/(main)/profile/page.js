@@ -5,8 +5,8 @@ import { supabase } from '@/lib/supabaseClient';
 import { User, Settings, Edit3, Shield, Bell, BookOpen, Repeat, Zap, UploadCloud, Trash2, X, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { updateProfile } from './actions';
-import ProfileSkeleton from '@/components/ProfileSkeleton';
-import PwaInstallButton from '@/components/shared/PwaInstallButton'; // <-- ADD THIS IMPORT
+import ProfileSkeleton from '@/components/ProfileSkeleton'; // Import the skeleton component
+import PwaInstallButton from '@/components/shared/PwaInstallButton';
 
 // --- (Your other components like defaultAvatars, TabButton, InsightCard, etc., remain here unchanged) ---
 const defaultAvatars = [ '/Avatar/male_avatar_for_kenshoprofile_1.png', '/Avatar/female_avatar_for_kenshoprofile_1.png', '/Avatar/male_avatar_for_kenshoprofile_2.png', '/Avatar/female_avatar_for_kenshoprofile_2.png', '/Avatar/male_avatar_for_kenshoprofile_3.png', '/Avatar/female_avatar_for_kenshoprofile_3.png', '/Avatar/male_avatar_for_kenshoprofile_4.png', '/Avatar/female_avatar_for_kenshoprofile_4.png', ];
@@ -150,10 +150,8 @@ const ProfilePage = () => {
   const handleNotificationToggle = async (isEnabled) => {
     if (!user) return;
 
-    // Optimistically update the UI first for a snappy feel
     setProfile(prev => ({ ...prev, email_notifications_enabled: isEnabled }));
 
-    // Then, update the database in the background
     const { error } = await supabase
       .from('users')
       .update({ email_notifications_enabled: isEnabled })
@@ -161,7 +159,6 @@ const ProfilePage = () => {
 
     if (error) {
       console.error('Error updating notification settings:', error);
-      // If the update fails, revert the UI change and alert the user
       setProfile(prev => ({ ...prev, email_notifications_enabled: !isEnabled }));
       alert('Failed to update notification settings. Please try again.');
     }
@@ -169,7 +166,7 @@ const ProfilePage = () => {
   
   const memberSince = user ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : '...';
 
-  if (loading) return <ProfileSkeleton />; // Use the skeleton component here
+  if (loading) return <ProfileSkeleton />;
 
   return (
     <>
@@ -191,7 +188,6 @@ const ProfilePage = () => {
                                                 {isEditingName ? ( 
                                                     <form onSubmit={handleNameChange} className="flex items-center gap-3">
                                                         <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} className="text-3xl font-bold text-white bg-gray-800 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-purple-500" autoFocus />
-                                                        {/* --- THE FIX: Themed buttons --- */}
                                                         <button type="submit" className="font-semibold bg-gradient-to-r from-purple-600 to-orange-400 text-white py-2 px-5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">Save</button>
                                                         <button type="button" onClick={() => setIsEditingName(false)} className="font-semibold bg-gray-700/80 hover:bg-gray-700 text-white py-2 px-5 rounded-lg transition-colors">Cancel</button>
                                                     </form>
@@ -219,7 +215,6 @@ const ProfilePage = () => {
                                 <div className="bg-black/10 rounded-2xl shadow-2xl p-8">
                                     <h2 className="text-xl font-bold text-white mb-2">Account Settings</h2>
                                     <div className="divide-y divide-gray-700/50">
-                                        {/* --- ADD THIS COMPONENT --- */}
                                         <PwaInstallButton />
                                         <div className="py-6 flex items-center justify-between">
                                             <div>
