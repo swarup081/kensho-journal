@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { User, Settings, Edit3, Shield, Bell, BookOpen, Repeat, Zap, UploadCloud, Trash2, X, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { updateProfile } from './actions';
-import ProfileSkeleton from '@/components/ProfileSkeleton'; // Import the skeleton component
+import ProfileSkeleton from '@/components/ProfileSkeleton';
 import PwaInstallButton from '@/components/shared/PwaInstallButton';
 
 // --- (Your other components like defaultAvatars, TabButton, InsightCard, etc., remain here unchanged) ---

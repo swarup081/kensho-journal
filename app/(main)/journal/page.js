@@ -14,19 +14,22 @@ const JournalPage = () => {
   const [analysisResult, setAnalysisResult] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showPwaPopup, setShowPwaPopup] = useState(false);
-  const [entryCount, setEntryCount] = useState(0);
-
+  
   useEffect(() => {
-    const checkEntryCount = () => {
-      const count = parseInt(localStorage.getItem('kenshoEntryCount') || '0', 10);
-      setEntryCount(count);
-    };
-    checkEntryCount();
-    
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       setIsLoading(false); 
     });
+
+    const pwaDismissed = localStorage.getItem('pwaInstallDismissed');
+    if (!pwaDismissed) {
+      const timer = setTimeout(() => {
+        setShowPwaPopup(true);
+      }, 5000); // Show popup after 5 seconds
+      
+      return () => clearTimeout(timer);
+    }
+    
     return () => subscription.unsubscribe();
   }, []);
 
@@ -68,26 +71,12 @@ const JournalPage = () => {
     setIsModalOpen(false);
     setTimeout(() => {
       setAnalysisResult(null);
-
-      const newCount = entryCount + 1;
-      localStorage.setItem('kenshoEntryCount', newCount.toString());
-      setEntryCount(newCount);
-
-      const promptThresholds = [1, 5, 10, 16];
-      if (promptThresholds.includes(newCount)) {
-        const dismissed = localStorage.getItem('pwaInstallDismissed');
-        if (!dismissed) {
-          setShowPwaPopup(true);
-        }
-      }
     }, 300);
   }
   
   const handlePopupDismiss = (installed) => {
     setShowPwaPopup(false);
-    if (installed) {
-      localStorage.setItem('pwaInstallDismissed', 'true');
-    }
+    localStorage.setItem('pwaInstallDismissed', 'true');
   };
 
   const currentDate = new Date().toLocaleDateString('en-US', {
