@@ -8,13 +8,14 @@ import { ArrowLeft, Lightbulb, MessageSquare, Bug, Star, ThumbsUp, Check } from 
 
 // --- Reusable UI Components ---
 
+// UPDATED: Removed hover effects from the className
 const ActionButton = ({ children, onClick, type = 'button', disabled = false, controls }) => (
   <motion.button
     animate={controls}
     type={type}
     onClick={onClick}
     disabled={disabled}
-    className="font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-300 transform hover:-translate-y-0.5 bg-gradient-to-r from-purple-600 to-orange-400 text-white hover:shadow-lg disabled:bg-gray-600 disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none"
+    className="font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-300 bg-gradient-to-r from-purple-600 to-orange-400 text-white disabled:bg-gray-600 disabled:shadow-none disabled:cursor-not-allowed"
   >
     {children}
   </motion.button>
