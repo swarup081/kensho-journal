@@ -16,12 +16,10 @@ import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
 
-// Toolbar and Editor components
+// --- Component Imports ---
+import JournalSkeleton from '@/components/JournalSkeleton'; // The full page skeleton
 const EditorToolbar = dynamic(() => import('@/components/EditorToolbar'), { ssr: false });
-const Editor = dynamic(() => import('@/components/Editor'), {
-  ssr: false,
-  loading: () => <div className="h-full text-gray-500 p-6">Loading Editor...</div>,
-});
+const Editor = dynamic(() => import('@/components/Editor'), { ssr: false });
 
 const JournalPage = () => {
   const [entryHtml, setEntryHtml] = useState('');
@@ -36,21 +34,12 @@ const JournalPage = () => {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
-      StarterKit.configure({
-        // This ensures an empty line is preserved when toggling lists/quotes off
-        paragraph: {
-          dropcursor: false,
-        },
-      }),
+      StarterKit.configure({ paragraph: { dropcursor: false } }),
       Underline,
-      Placeholder.configure({
-        placeholder: isLoading ? "Authenticating..." : "Let your thoughts flow...",
-      }),
+      Placeholder.configure({ placeholder: "Let your thoughts flow..." }),
     ],
     content: entryHtml,
-    onUpdate: ({ editor }) => {
-      setEntryHtml(editor.getHTML());
-    },
+    onUpdate: ({ editor }) => setEntryHtml(editor.getHTML()),
     editable: !isLoading && !isSaving,
     editorProps: {
       attributes: {
@@ -62,15 +51,13 @@ const JournalPage = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      setIsLoading(false);
+      setTimeout(() => setIsLoading(false), 300); // Simulate load time for skeleton
     });
     return () => subscription.unsubscribe();
   }, []);
 
   useEffect(() => {
-    if (editor) {
-      editor.setEditable(!isLoading && !isSaving);
-    }
+    if (editor) editor.setEditable(!isLoading && !isSaving);
   }, [isLoading, isSaving, editor]);
 
   const handleSaveEntry = async () => {
@@ -92,10 +79,10 @@ const JournalPage = () => {
     }
 
     const demoAnalysisResult = {
-        summary: "It sounds like you're navigating a period of significant personal growth, balancing the excitement of new opportunities with a natural sense of uncertainty.",
-        emotions: [ { "emotion": "Optimism", "score": 8 }, { "emotion": "Anxiety", "score": 5 }, { "emotion": "Curiosity", "score": 7 } ],
-        keywords: ["new beginnings", "personal growth", "uncertainty", "opportunity", "reflection"],
-        insightfulQuestion: "What one small step could you take tomorrow that honors both your excitement and your need for stability?"
+      summary: "It sounds like you're navigating a period of significant personal growth, balancing the excitement of new opportunities with a natural sense of uncertainty.",
+      emotions: [ { "emotion": "Optimism", "score": 8 }, { "emotion": "Anxiety", "score": 5 }, { "emotion": "Curiosity", "score": 7 } ],
+      keywords: ["new beginnings", "personal growth", "uncertainty", "opportunity", "reflection"],
+      insightfulQuestion: "What one small step could you take tomorrow that honors both your excitement and your need for stability?"
     };
 
     setTimeout(() => {
@@ -125,6 +112,11 @@ const JournalPage = () => {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   });
 
+  // --- FIX: Conditionally render the skeleton or the page ---
+  if (isLoading) {
+    return <JournalSkeleton />;
+  }
+
   return (
     <>
       <AudioPlayer activeSound={activeSound} />
@@ -141,14 +133,13 @@ const JournalPage = () => {
               <div className="p-6 flex-grow relative">
                 <Editor editor={editor} />
               </div>
-              {/* --- FIX: Updated flex layout --- */}
               <div className="p-4 bg-gray-900/40 border-t border-gray-700/50 flex items-center">
                 <div className="flex-grow">
                   <EditorToolbar editor={editor} onSoundSelect={setActiveSound} />
                 </div>
                 <button
                   onClick={handleSaveEntry}
-                  disabled={isLoading || (editor && editor.isEmpty) || isSaving}
+                  disabled={(editor && editor.isEmpty) || isSaving}
                   className="bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSaving ? 'Saving...' : 'Save'}
