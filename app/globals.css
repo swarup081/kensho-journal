@@ -10,10 +10,10 @@ body {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  font-family: 'Inter', sans-serif; /* Set Inter as the base font */
+  font-family: 'Inter', sans-serif;
 }
 
-/* Custom scrollbar styles remain the same */
+/* Custom scrollbar styles */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: #2d3748; }
 ::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 4px; }
@@ -21,19 +21,22 @@ body {
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* --- Tiptap Editor Styles --- */
-.ProseMirror {
-  min-height: 100%;
-  font-family: 'Inter', sans-serif; /* --- FIX: Use Inter for a cleaner look --- */
-  font-size: 1.125rem; /* text-lg */
-  line-height: 1.75rem; /* leading-relaxed */
+/* --- Tiptap Editor & Prose Render Styles --- */
+.prose {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
 }
 
-.ProseMirror:focus {
+.prose p {
+  font-weight: 400;
+}
+
+.prose:focus {
   outline: none;
 }
 
-.ProseMirror p.is-editor-empty:first-child::before {
+.prose p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;
   color: #6b7280;
@@ -41,22 +44,32 @@ body {
   height: 0;
 }
 
-.ProseMirror blockquote {
+/* --- FIX: Enhanced Blockquote and List Styles --- */
+.prose blockquote {
   border-left-color: #8B5CF6;
-  background-color: rgba(139, 92, 246, 0.05);
-  padding: 0.5rem 1rem;
-  margin: 1rem 0;
+  background-color: rgba(139, 92, 246, 0.1); /* Slightly more prominent */
+  padding: 0.75rem 1rem;
+  margin: 1.5rem 0;
   border-radius: 0.5rem;
   font-style: italic;
-  color: #d1d5db;
+  color: #e5e7eb; /* Lighter text for contrast */
 }
 
-/* --- FIX: Ensure list markers (bullets and numbers) are visible --- */
-.ProseMirror ul {
+.prose ul {
   list-style-type: disc;
   padding-left: 1.75rem;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
-.ProseMirror ol {
+
+.prose ol {
   list-style-type: decimal;
   padding-left: 1.75rem;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.prose li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }

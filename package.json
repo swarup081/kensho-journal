@@ -18,15 +18,16 @@
     "next": "15.4.2",
     "next-pwa": "^5.6.0",
     "openai": "^5.11.0",
- "react": "^18.2.0",
-"react-dom": "^18.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "recharts": "^3.1.0",
     "tailwind-scrollbar-hide": "^4.0.0",
     "@tiptap/react": "2.2.4",
     "@tiptap/starter-kit": "2.2.4",
     "@tiptap/extension-underline": "2.2.4",
     "@tiptap/extension-placeholder": "2.2.4",
-    "turndown": "7.1.2"
+    "turndown": "7.1.2",
+    "showdown": "^2.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

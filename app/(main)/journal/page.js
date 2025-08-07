@@ -16,8 +16,8 @@ import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
 
-// --- Component Imports ---
-import JournalSkeleton from '@/components/JournalSkeleton'; // The full page skeleton
+// Component Imports
+import JournalSkeleton from '@/components/JournalSkeleton';
 const EditorToolbar = dynamic(() => import('@/components/EditorToolbar'), { ssr: false });
 const Editor = dynamic(() => import('@/components/Editor'), { ssr: false });
 
@@ -34,12 +34,20 @@ const JournalPage = () => {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
-      StarterKit.configure({ paragraph: { dropcursor: false } }),
+      StarterKit.configure({
+        paragraph: {
+          dropcursor: false,
+        },
+      }),
       Underline,
-      Placeholder.configure({ placeholder: "Let your thoughts flow..." }),
+      Placeholder.configure({
+        placeholder: "Let your thoughts flow...",
+      }),
     ],
     content: entryHtml,
-    onUpdate: ({ editor }) => setEntryHtml(editor.getHTML()),
+    onUpdate: ({ editor }) => {
+      setEntryHtml(editor.getHTML());
+    },
     editable: !isLoading && !isSaving,
     editorProps: {
       attributes: {
@@ -51,15 +59,17 @@ const JournalPage = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      setTimeout(() => setIsLoading(false), 300); // Simulate load time for skeleton
+      setTimeout(() => setIsLoading(false), 300); 
     });
     return () => subscription.unsubscribe();
   }, []);
 
   useEffect(() => {
-    if (editor) editor.setEditable(!isLoading && !isSaving);
+    if (editor) {
+      editor.setEditable(!isLoading && !isSaving);
+    }
   }, [isLoading, isSaving, editor]);
-
+  
   const handleSaveEntry = async () => {
     const markdownContent = convertToMarkdown(entryHtml);
     if (markdownContent.trim() === '' || !user || isSaving) return;
@@ -79,10 +89,10 @@ const JournalPage = () => {
     }
 
     const demoAnalysisResult = {
-      summary: "It sounds like you're navigating a period of significant personal growth, balancing the excitement of new opportunities with a natural sense of uncertainty.",
-      emotions: [ { "emotion": "Optimism", "score": 8 }, { "emotion": "Anxiety", "score": 5 }, { "emotion": "Curiosity", "score": 7 } ],
-      keywords: ["new beginnings", "personal growth", "uncertainty", "opportunity", "reflection"],
-      insightfulQuestion: "What one small step could you take tomorrow that honors both your excitement and your need for stability?"
+        summary: "It sounds like you're navigating a period of significant personal growth, balancing the excitement of new opportunities with a natural sense of uncertainty.",
+        emotions: [ { "emotion": "Optimism", "score": 8 }, { "emotion": "Anxiety", "score": 5 }, { "emotion": "Curiosity", "score": 7 } ],
+        keywords: ["new beginnings", "personal growth", "uncertainty", "opportunity", "reflection"],
+        insightfulQuestion: "What one small step could you take tomorrow that honors both your excitement and your need for stability?"
     };
 
     setTimeout(() => {
@@ -112,7 +122,6 @@ const JournalPage = () => {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   });
 
-  // --- FIX: Conditionally render the skeleton or the page ---
   if (isLoading) {
     return <JournalSkeleton />;
   }
@@ -128,9 +137,11 @@ const JournalPage = () => {
             <h1 className="text-3xl font-bold text-gray-100" style={{ fontFamily: "'Lora', serif" }}>My Journal</h1>
             <p className="text-gray-400 mt-1">{currentDate}</p>
           </header>
-          <div className="flex-grow py-8">
+          {/* --- FIX: Removed flex-grow from the parent div --- */}
+          <div className="py-8">
             <div className="bg-black/10 rounded-lg shadow-2xl h-full flex flex-col">
-              <div className="p-6 flex-grow relative">
+              {/* --- FIX: Set a fixed height and enabled scrolling on this div --- */}
+              <div className="p-6 h-[55vh] overflow-y-auto scrollbar-hide">
                 <Editor editor={editor} />
               </div>
               <div className="p-4 bg-gray-900/40 border-t border-gray-700/50 flex items-center">

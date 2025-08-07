@@ -1,9 +1,11 @@
+// components/DayDetailModal.js
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { convertToHtml } from '@/lib/htmlConverter'; 
 
 const EmotionChart = dynamic(() => import('@/components/EmotionChart'), {
     ssr: false,
@@ -29,6 +31,8 @@ const TabButton = ({ label, isActive, onClick }) => (
 
 const JournalEntryCard = ({ entry, demoAnalysis }) => {
     const [isExpanded, setIsExpanded] = useState(false);
+    
+    const entryHtml = convertToHtml(entry.content);
 
     return (
         <div className="bg-gray-900/40 rounded-xl border border-gray-800/50 overflow-hidden transition-all duration-300">
@@ -66,7 +70,12 @@ const JournalEntryCard = ({ entry, demoAnalysis }) => {
                             <div className="space-y-4">
                                 <h3 className="font-semibold text-purple-300">Your Entry</h3>
                                 <div className="bg-black/20 p-3 rounded-lg max-h-48 overflow-y-auto scrollbar-hide">
-                                    <p className="text-gray-300 whitespace-pre-wrap text-sm">{entry.content}</p>
+                                    {/* --- FIX: Apply inline styles for guaranteed font size and line height --- */}
+                                    <div
+                                      className="prose prose-invert"
+                                      style={{ fontSize: '0.875rem', lineHeight: '1.25rem' }}
+                                      dangerouslySetInnerHTML={{ __html: entryHtml }}
+                                    />
                                 </div>
                                 {entry.ai_question_response && (
                                     <div>
