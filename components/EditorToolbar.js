@@ -6,13 +6,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Type,
   Bold, Italic, Underline, Strikethrough, List, ListOrdered,
-  Quote, Music, Droplets, Coffee, Sofa
+  Quote, Music, Sofa, Guitar, Umbrella // --- Final, Refined Icons ---
 } from 'lucide-react';
 
-const EditorToolbar = ({ editor, onSoundSelect }) => {
+const EditorToolbar = ({ editor, onSoundSelect, activeSound }) => {
   const [activeMenu, setActiveMenu] = useState(null);
 
-  // --- FIX: Render a placeholder to prevent layout shift ---
   if (!editor) {
     return <div className="mr-auto"></div>;
   }
@@ -34,7 +33,7 @@ const EditorToolbar = ({ editor, onSoundSelect }) => {
 
   return (
     <div className="flex items-center gap-1 mr-auto relative">
-      {/* --- Text Formatting Menu --- */}
+      {/* Text Formatting Menu */}
       <div className="relative">
         <button
           onClick={() => toggleMenu('text')}
@@ -59,7 +58,7 @@ const EditorToolbar = ({ editor, onSoundSelect }) => {
         </AnimatePresence>
       </div>
 
-      {/* --- List Formatting Menu --- */}
+      {/* List Formatting Menu */}
       <div className="relative">
         <button
           onClick={() => toggleMenu('list')}
@@ -82,17 +81,17 @@ const EditorToolbar = ({ editor, onSoundSelect }) => {
         </AnimatePresence>
       </div>
 
-      {/* --- Blockquote Button --- */}
+      {/* Blockquote Button */}
       <button onClick={() => editor.chain().focus().toggleBlockquote().run()} className={getButtonClass('blockquote')}>
         <Quote className="h-5 w-5" />
       </button>
 
-      {/* --- Audio Menu --- */}
+      {/* Audio Menu */}
       <div className="relative">
         <button
           onClick={() => toggleMenu('audio')}
           className={`p-2 rounded-md transition-colors ${
-            activeMenu === 'audio' ? 'bg-gray-700/50 text-white' : 'text-gray-400'
+            activeSound ? 'text-purple-400' : 'text-gray-400'
           } hover:bg-gray-700/50 hover:text-white`}
         >
           <Music className="h-5 w-5" />
@@ -103,9 +102,9 @@ const EditorToolbar = ({ editor, onSoundSelect }) => {
               variants={menuVariants} initial="hidden" animate="visible" exit="hidden"
               className="absolute bottom-full mb-2 bg-gray-800 border border-gray-700/50 shadow-xl rounded-lg overflow-hidden flex"
             >
-              <button onClick={() => { onSoundSelect('rain'); toggleMenu(null); }} className="p-2 text-gray-400 hover:bg-gray-700"><Droplets className="h-5 w-5" /></button>
+              <button onClick={() => { onSoundSelect('rain'); toggleMenu(null); }} className="p-2 text-gray-400 hover:bg-gray-700"><Umbrella className="h-5 w-5" /></button>
               <button onClick={() => { onSoundSelect('comfort'); toggleMenu(null); }} className="p-2 text-gray-400 hover:bg-gray-700"><Sofa className="h-5 w-5" /></button>
-              <button onClick={() => { onSoundSelect('cafe'); toggleMenu(null); }} className="p-2 text-gray-400 hover:bg-gray-700"><Coffee className="h-5 w-5" /></button>
+              <button onClick={() => { onSoundSelect('reflect'); toggleMenu(null); }} className="p-2 text-gray-400 hover:bg-gray-700"><Guitar className="h-5 w-5" /></button>
               <button onClick={() => { onSoundSelect(null); toggleMenu(null); }} className="p-2 text-gray-400 hover:bg-gray-700">Off</button>
             </motion.div>
           )}

@@ -137,16 +137,14 @@ const JournalPage = () => {
             <h1 className="text-3xl font-bold text-gray-100" style={{ fontFamily: "'Lora', serif" }}>My Journal</h1>
             <p className="text-gray-400 mt-1">{currentDate}</p>
           </header>
-          {/* --- FIX: Removed flex-grow from the parent div --- */}
-          <div className="py-8">
+          <div className="flex-grow py-8">
             <div className="bg-black/10 rounded-lg shadow-2xl h-full flex flex-col">
-              {/* --- FIX: Set a fixed height and enabled scrolling on this div --- */}
-              <div className="p-6 h-[55vh] overflow-y-auto scrollbar-hide">
+              <div className="p-6 flex-grow relative">
                 <Editor editor={editor} />
               </div>
               <div className="p-4 bg-gray-900/40 border-t border-gray-700/50 flex items-center">
                 <div className="flex-grow">
-                  <EditorToolbar editor={editor} onSoundSelect={setActiveSound} />
+                  <EditorToolbar editor={editor} onSoundSelect={setActiveSound} activeSound={activeSound} />
                 </div>
                 <button
                   onClick={handleSaveEntry}

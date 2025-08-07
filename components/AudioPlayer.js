@@ -5,14 +5,14 @@ import { useEffect, useRef } from 'react';
 
 const AudioPlayer = ({ activeSound }) => {
   const rainRef = useRef(null);
-  const cafeRef = useRef(null);
   const comfortRef = useRef(null);
+  const reflectRef = useRef(null); // --- FIX: Added a ref for the new sound ---
 
   useEffect(() => {
     const sounds = {
       rain: rainRef.current,
-      cafe: cafeRef.current,
       comfort: comfortRef.current,
+      reflect: reflectRef.current, // --- FIX: Added the new sound to the map ---
     };
 
     // Pause all sounds first
@@ -32,8 +32,9 @@ const AudioPlayer = ({ activeSound }) => {
   return (
     <>
       <audio ref={rainRef} src="/sounds/rain.mp3" />
-      <audio ref={cafeRef} src="/sounds/cafe.mp3" />
       <audio ref={comfortRef} src="/sounds/comfort.mp3" />
+      {/* --- FIX: Added the audio element for reflect.mp3 --- */}
+      <audio ref={reflectRef} src="/sounds/reflect.mp3" />
     </>
   );
 };
