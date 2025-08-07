@@ -1,44 +1,62 @@
+/* app/globals.css */
+
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0;400;0;700;1;400&display=swap');
 
 body {
-  /* Your required background styles */
   background-image: url('/landing-background.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-
-  /* My added font style */
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif; /* Set Inter as the base font */
 }
 
-/* Custom scrollbar for a more refined look */
-::-webkit-scrollbar {
-  width: 8px;
+/* Custom scrollbar styles remain the same */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #2d3748; }
+::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #718096; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* --- Tiptap Editor Styles --- */
+.ProseMirror {
+  min-height: 100%;
+  font-family: 'Inter', sans-serif; /* --- FIX: Use Inter for a cleaner look --- */
+  font-size: 1.125rem; /* text-lg */
+  line-height: 1.75rem; /* leading-relaxed */
 }
 
-::-webkit-scrollbar-track {
-  background: #2d3748; /* dark-gray-800 */
+.ProseMirror:focus {
+  outline: none;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #4a5568; /* dark-gray-600 */
-  border-radius: 4px;
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #6b7280;
+  pointer-events: none;
+  height: 0;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #718096; /* dark-gray-500 */
+.ProseMirror blockquote {
+  border-left-color: #8B5CF6;
+  background-color: rgba(139, 92, 246, 0.05);
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  font-style: italic;
+  color: #d1d5db;
 }
 
-/* Add these new utility classes at the end of the file */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+/* --- FIX: Ensure list markers (bullets and numbers) are visible --- */
+.ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 1.75rem;
 }
-
-.scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+.ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 1.75rem;
 }
