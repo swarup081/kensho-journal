@@ -125,8 +125,7 @@ const JournalPage = () => {
                   disabled={isLoading || !entry.trim() || isSaving}
                   className="bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSaving ? 'Analyzing...' : 'Save'}
-                </button>
+                {isSaving ? 'Saved' : 'Save '}                </button>
               </div>
             </div>
           </div>
