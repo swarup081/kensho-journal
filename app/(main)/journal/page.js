@@ -51,6 +51,7 @@ const JournalPage = () => {
     editable: !isLoading && !isSaving,
     editorProps: {
       attributes: {
+        // --- FIX: Ensure the editor itself fills its container ---
         class: 'prose prose-invert prose-lg focus:outline-none w-full h-full',
       },
     },
@@ -137,9 +138,11 @@ const JournalPage = () => {
             <h1 className="text-3xl font-bold text-gray-100" style={{ fontFamily: "'Lora', serif" }}>My Journal</h1>
             <p className="text-gray-400 mt-1">{currentDate}</p>
           </header>
-          <div className="flex-grow py-8">
-            <div className="bg-black/10 rounded-lg shadow-2xl h-full flex flex-col">
-              <div className="p-6 flex-grow relative">
+          {/* Removed flex-grow from this parent div */}
+          <div className="py-8">
+            <div className="bg-black/10 rounded-lg shadow-2xl flex flex-col">
+              {/* --- FIX: Applied a fixed height and scrolling behavior here --- */}
+              <div className="p-6 h-[55vh] overflow-y-auto scrollbar-hide">
                 <Editor editor={editor} />
               </div>
               <div className="p-4 bg-gray-900/40 border-t border-gray-700/50 flex items-center">
