@@ -72,6 +72,7 @@ Automated Weekly/Monthly Reports.
 
 Full Data Export.
 
+
 4. The User Experience Strategy
 
 Our user retention strategy is built on a powerful, guided first-week experience.
@@ -85,5 +86,6 @@ The First Week ("Mindful Momentum" Program): We guide the user through a 7-day j
 Tech Stack: Next.js (App Router), Supabase (Database & Auth), Tailwind CSS, Vercel (Deployment), OpenAI API.
 
 Project Structure: A clean, organized structure with separate folders for app (routes), components (UI), and lib (helpers).
+
 
 Development Plan: A focused, 12-week sprint plan designed for a solo developer dedicating 7-10 hours per week.
