@@ -6,9 +6,6 @@ import Link from 'next/link';
 import { motion, AnimatePresence, useAnimationControls } from 'framer-motion';
 import { ArrowLeft, Lightbulb, MessageSquare, Bug, Star, ThumbsUp, Check } from 'lucide-react';
 
-// --- Reusable UI Components ---
-
-// UPDATED: Removed hover effects from the className
 const ActionButton = ({ children, onClick, type = 'button', disabled = false, controls }) => (
   <motion.button
     animate={controls}
@@ -73,8 +70,6 @@ const ToggleSwitch = ({ checked, onChange }) => (
   </div>
 );
 
-
-// --- Main Feedback Page Component ---
 
 const FeedbackPage = () => {
   const [step, setStep] = useState(1);
@@ -283,7 +278,7 @@ const handleSubmit = async () => {
                 }
                 controls={controls}
               >
-                {step === 4 ? 'Submit Feedback' : 'Next'}
+                {step === 4 ? 'Submit' : 'Next'}
               </ActionButton>
             </div>
           </div>

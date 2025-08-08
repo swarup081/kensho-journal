@@ -235,7 +235,7 @@ const ProfilePage = () => {
                                                 <p className="text-gray-400 text-sm mt-1">You will receive an email with instructions.</p>
                                                 {passwordResetMessage && ( <p className={`text-sm mt-2 font-semibold ${passwordResetError ? 'text-red-400' : 'text-purple-400'}`}>{passwordResetMessage}</p> )}
                                             </div>
-                                            <ActionButton onClick={handlePasswordReset}>Send Reset Link</ActionButton>
+                                            <ActionButton onClick={handlePasswordReset}>Reset</ActionButton>
                                         </div>
                                         <div className="py-6 flex items-center justify-between">
                                             <div>
