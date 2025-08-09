@@ -89,19 +89,30 @@ const JournalPage = () => {
       setIsSaving(false); setIsModalOpen(false); return;
     }
 
-    const demoAnalysisResult = {
-        summary: "It sounds like you're navigating a period of significant personal growth, balancing the excitement of new opportunities with a natural sense of uncertainty.",
-        emotions: [ { "emotion": "Optimism", "score": 8 }, { "emotion": "Anxiety", "score": 5 }, { "emotion": "Curiosity", "score": 7 } ],
-        keywords: ["new beginnings", "personal growth", "uncertainty", "opportunity", "reflection"],
-        insightfulQuestion: "What one small step could you take tomorrow that honors both your excitement and your need for stability?"
-    };
+    try {
+      const analysisResponse = await fetch('/api/ai/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ entryId: data.id, content: markdownContent }),
+      });
 
-    setTimeout(() => {
-      setModalAnalysis({ ...demoAnalysisResult, entryId: data.id });
+      if (!analysisResponse.ok) {
+        throw new Error('Failed to get analysis');
+      }
+
+      const analysisResult = await analysisResponse.json();
+
+      setModalAnalysis({ ...analysisResult, entryId: data.id });
       setEntryHtml('');
       editor?.commands.clearContent(true);
+    } catch (error) {
+      console.error('Error getting analysis:', error);
+      // Optionally, show an error message to the user in the modal
+    } finally {
       setIsSaving(false);
-    }, 2500);
+    }
   };
 
   const handleCloseModal = () => {

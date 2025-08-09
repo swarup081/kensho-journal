@@ -132,7 +132,39 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
                         &quot;{analysis.insightfulQuestion}&quot;
                       </p>
                       <div className="mt-6">
-                        {/* Reflection UI logic can remain here */}
+                        {!isReflecting ? (
+                          <button
+                            onClick={() => setIsReflecting(true)}
+                            className="bg-purple-600/50 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-purple-600/80 transition-all duration-300"
+                          >
+                            Reflect on this
+                          </button>
+                        ) : (
+                          <div className="w-full max-w-lg mx-auto">
+                            <textarea
+                              value={reflection}
+                              onChange={(e) => setReflection(e.target.value)}
+                              placeholder="Write your thoughts..."
+                              className="w-full p-3 bg-gray-900/60 border border-gray-700 rounded-lg text-gray-300 focus:ring-2 focus:ring-purple-500 focus:outline-none transition"
+                              rows={3}
+                            />
+                            <div className="mt-3 flex justify-end gap-3">
+                              <button
+                                onClick={() => setIsReflecting(false)}
+                                className="text-gray-400 hover:text-white transition-colors"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={handleSaveReflection}
+                                disabled={isSaving || isSaved}
+                                className="bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition-all duration-300 disabled:opacity-60"
+                              >
+                                {isSaving ? 'Saving...' : isSaved ? 'Saved!' : 'Save Reflection'}
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

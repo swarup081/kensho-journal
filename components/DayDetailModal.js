@@ -45,7 +45,7 @@ const JournalEntryCard = ({ entry, demoAnalysis }) => {
                         <span className="text-purple-400 font-bold mr-2">
                             {new Date(entry.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}:
                         </span>
-                        {entry.content}
+                        {entry.ai_title || entry.content}
                     </p>
                     <ChevronDown
                         className={`text-gray-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
@@ -103,7 +103,7 @@ const JournalEntryCard = ({ entry, demoAnalysis }) => {
 };
 
 
-export default function DayDetailModal({ entries, isOpen, onClose }) {
+export default function DayDetailModal({ entries, isOpen, onClose, dailyAnalysis }) {
   const [activeTab, setActiveTab] = useState('summary');
 
   if (!isOpen || !entries || entries.length === 0) return null;
@@ -112,9 +112,9 @@ export default function DayDetailModal({ entries, isOpen, onClose }) {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   });
   
-  const dailyDemoAnalysis = {
-    summary: "Today was a day of productive focus, balanced with moments of quiet contemplation and planning for the future.",
-    emotions: [ { "emotion": "Focused", "score": 8 }, { "emotion": "Content", "score": 7 }, { "emotion": "Hopeful", "score": 6 } ],
+  const displayAnalysis = dailyAnalysis || {
+    summary: "Analyzing the day's entries...",
+    emotions: [],
   };
 
   return (
@@ -159,11 +159,11 @@ export default function DayDetailModal({ entries, isOpen, onClose }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <h3 className="text-xl font-semibold text-purple-300 mb-2" style={{ fontFamily: "'Lora', serif" }}>Overall Summary</h3>
-                            <p className="text-gray-300 italic">&quot;{dailyDemoAnalysis.summary}&quot;</p>
+                            <p className="text-gray-300 italic">&quot;{displayAnalysis.summary}&quot;</p>
                         </div>
                         <div className="bg-gray-900/40 p-4 rounded-xl">
                             <h3 className="font-semibold text-purple-300 mb-2 text-center">Overall Emotion Flow</h3>
-                            <EmotionChart data={dailyDemoAnalysis.emotions} />
+                            <EmotionChart data={displayAnalysis.emotions} />
                         </div>
                     </div>
                   )}
@@ -171,7 +171,7 @@ export default function DayDetailModal({ entries, isOpen, onClose }) {
                   {activeTab === 'entries' && (
                     <div className="space-y-4">
                       {entries.map((entry) => (
-                        <JournalEntryCard key={entry.id} entry={entry} demoAnalysis={dailyDemoAnalysis} />
+                        <JournalEntryCard key={entry.id} entry={entry} demoAnalysis={displayAnalysis} />
                       ))}
                     </div>
                   )}
