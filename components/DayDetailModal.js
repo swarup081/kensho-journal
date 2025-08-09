@@ -45,7 +45,7 @@ const JournalEntryCard = ({ entry, demoAnalysis }) => {
                         <span className="text-purple-400 font-bold mr-2">
                             {new Date(entry.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}:
                         </span>
-                        {entry.content}
+                        {entry.ai_title || entry.content}
                     </p>
                     <ChevronDown
                         className={`text-gray-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}

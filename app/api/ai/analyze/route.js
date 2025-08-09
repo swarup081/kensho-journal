@@ -15,28 +15,28 @@ export async function POST(request) {
 
   try {
     const prompt = `
-      Analyze the following journal entry and provide a structured analysis in JSON format. The entry is:
+      Analyze the following journal entry with a human, polite, and supportive tone. Avoid a robotic feel and do not start sentences with "The user...". Your analysis should be detailed yet precise. The entry is:
       ---
       ${content}
       ---
       Your response must be a single JSON object with the following keys:
-      - "summary": A concise, one-sentence summary of the entry.
-      - "keywords": An array of 5-7 relevant keywords or themes from the entry. Extract any user-defined hashtags (words starting with #) and include them.
-      - "emotions": An array of the top 3 emotions detected in the entry. Each element must be an object with "emotion" (string) and "score" (integer, 1-10).
-      - "insightfulQuestion": A single, open-ended, insightful question that encourages further reflection on the entry's themes.
-      - "title": A short, catchy title for the journal entry (max 5 words).
+      - "summary": A concise, one or two-sentence summary that sounds like a supportive friend's observation. It should be insightful and reflect the core of the entry.
+      - "keywords": An array of 5-7 relevant keywords or themes. ALL keywords MUST be prefixed with a '#'. Extract any user-defined hashtags and ensure all other keywords you generate also have this prefix.
+      - "emotions": An array of the top 3 emotions detected. Each element must be an object with "emotion" (string) and "score" (integer, 1-10).
+      - "insightfulQuestion": A single, open-ended, and appropriate insightful question that encourages deeper, meaningful reflection. It should feel like it's coming from someone who genuinely understands.
+      - "title": A short, catchy, and emotionally resonant title for the journal entry (max 5 words).
 
-      Example Response:
+      Example of the TONE and STRUCTURE:
       {
-        "summary": "The user is feeling a mix of excitement and apprehension about an upcoming project.",
-        "keywords": ["#project", "#newbeginnings", "anxiety", "excitement", "opportunity"],
+        "summary": "It sounds like you're navigating a complex situation, and it's completely understandable to feel a mix of hope and uncertainty. You're showing great strength by reflecting on it.",
+        "keywords": ["#NewChapter", "#PersonalGrowth", "#Uncertainty", "#SelfReflection", "#JobSearch"],
         "emotions": [
-          { "emotion": "Excitement", "score": 8 },
-          { "emotion": "Anxiety", "score": 6 },
-          { "emotion": "Hopeful", "score": 7 }
+          { "emotion": "Hopeful", "score": 8 },
+          { "emotion": "Anxious", "score": 5 },
+          { "emotion": "Determined", "score": 7 }
         ],
-        "insightfulQuestion": "What specific aspect of this new project is causing the most apprehension, and how can you prepare for it?",
-        "title": "Excited and Apprehensive"
+        "insightfulQuestion": "As you step into this new chapter, what is one core value you want to hold onto, no matter what challenges arise?",
+        "title": "Navigating the Unknown"
       }
     `;
 
@@ -47,6 +47,11 @@ export async function POST(request) {
     });
 
     const analysis = JSON.parse(response.choices[0].message.content);
+
+    // Post-processing to ensure all keywords have a '#' prefix
+    if (analysis.keywords && Array.isArray(analysis.keywords)) {
+      analysis.keywords = analysis.keywords.map(kw => kw.startsWith('#') ? kw : `#${kw}`);
+    }
 
     const { error } = await supabase
       .from('journal_entries')
