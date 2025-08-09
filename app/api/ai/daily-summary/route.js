@@ -18,8 +18,6 @@ export async function POST(request) {
 
   const endDate = new Date(date);
   endDate.setHours(23, 59, 59, 999);
-
-  // --- FIX: Check for existing summary before fetching entries ---
   const dateString = startDate.toISOString().slice(0, 10); // YYYY-MM-DD format
 
   try {
@@ -93,18 +91,18 @@ export async function POST(request) {
 
     const analysis = JSON.parse(response.choices[0].message.content);
 
-    // --- FIX: Save the new summary to the database ---
-    const { error: insertError } = await supabase
+    // --- FIX: Upsert the new summary to the database ---
+    const { error: upsertError } = await supabase
       .from('daily_summaries')
-      .insert({
+      .upsert({
         user_id: userId,
         date: dateString,
         summary: analysis.summary,
         emotions: analysis.emotions,
-      });
+      }, { onConflict: 'user_id, date' });
 
-    if (insertError) {
-      console.error('Failed to save daily summary:', insertError);
+    if (upsertError) {
+      console.error('Failed to save daily summary:', upsertError);
       // Non-critical error, so we still return the analysis to the user
     }
 
