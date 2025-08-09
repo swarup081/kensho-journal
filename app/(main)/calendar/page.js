@@ -23,11 +23,14 @@ const CalendarPage = () => {
   const [journalEntries, setJournalEntries] = useState([]);
   const [selectedEntries, setSelectedEntries] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [dailyAnalysis, setDailyAnalysis] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const fetchJournalEntries = async () => {
+    const fetchInitialData = async () => {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
 
       if (user) {
         const { data: entries, error } = await supabase
@@ -44,14 +47,14 @@ const CalendarPage = () => {
       setLoading(false);
     };
 
-    fetchJournalEntries();
+    fetchInitialData();
   }, []);
 
   const journaledDates = new Set(
     journalEntries.map(entry => new Date(new Date(entry.created_at).setHours(0, 0, 0, 0)).getTime())
   );
   
-  const handleDateClick = (day) => {
+  const handleDateClick = async (day) => {
     const dayStart = new Date(day.setHours(0, 0, 0, 0)).getTime();
     
     const entriesForDay = journalEntries.filter(entry => {
@@ -62,6 +65,24 @@ const CalendarPage = () => {
     if (entriesForDay.length > 0) {
         setSelectedEntries(entriesForDay);
         setIsModalOpen(true);
+        setDailyAnalysis(null); // Reset previous analysis
+
+        try {
+          const response = await fetch('/api/ai/daily-summary', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ date: day, userId: user.id }),
+          });
+          if (response.ok) {
+            const data = await response.json();
+            setDailyAnalysis(data);
+          } else {
+            setDailyAnalysis({ summary: 'Could not load summary.', emotions: [] });
+          }
+        } catch (error) {
+          console.error('Failed to fetch daily summary', error);
+          setDailyAnalysis({ summary: 'Error loading summary.', emotions: [] });
+        }
     }
   };
 
@@ -79,6 +100,7 @@ const CalendarPage = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         entries={selectedEntries}
+        dailyAnalysis={dailyAnalysis}
       />
       <div className="h-full p-4 sm:p-8 lg:p-12">
         <div className="max-w-4xl mx-auto">
