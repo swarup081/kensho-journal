@@ -19,7 +19,27 @@ export async function POST(request) {
   const endDate = new Date(date);
   endDate.setHours(23, 59, 59, 999);
 
+  // --- FIX: Check for existing summary before fetching entries ---
+  const dateString = startDate.toISOString().slice(0, 10); // YYYY-MM-DD format
+
   try {
+    // 1. Check for an existing daily summary
+    const { data: existingSummary, error: summaryError } = await supabase
+      .from('daily_summaries')
+      .select('summary, emotions')
+      .eq('user_id', userId)
+      .eq('date', dateString)
+      .single();
+
+    if (summaryError && summaryError.code !== 'PGRST116') { // Ignore 'not found' error
+      console.error('Error fetching existing summary:', summaryError);
+    }
+
+    if (existingSummary) {
+      return NextResponse.json(existingSummary);
+    }
+
+    // 2. If no summary, fetch entries and generate one
     const { data: entries, error } = await supabase
       .from('journal_entries')
       .select('content, ai_summary, ai_emotions')
@@ -72,6 +92,21 @@ export async function POST(request) {
     });
 
     const analysis = JSON.parse(response.choices[0].message.content);
+
+    // --- FIX: Save the new summary to the database ---
+    const { error: insertError } = await supabase
+      .from('daily_summaries')
+      .insert({
+        user_id: userId,
+        date: dateString,
+        summary: analysis.summary,
+        emotions: analysis.emotions,
+      });
+
+    if (insertError) {
+      console.error('Failed to save daily summary:', insertError);
+      // Non-critical error, so we still return the analysis to the user
+    }
 
     return NextResponse.json(analysis);
   } catch (error) {

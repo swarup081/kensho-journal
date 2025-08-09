@@ -145,7 +145,7 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
                               value={reflection}
                               onChange={(e) => setReflection(e.target.value)}
                               placeholder="Write your thoughts..."
-                              className="w-full p-3 bg-gray-900/60 border border-gray-700 rounded-lg text-gray-300 focus:ring-2 focus:ring-purple-500 focus:outline-none transition"
+                              className="w-full p-3 bg-gray-900/60 border border-gray-700 rounded-lg text-gray-300 focus:ring-2 focus:ring-purple-500 focus:outline-none transition resize-none"
                               rows={3}
                             />
                             <div className="mt-3 flex justify-end gap-3">
