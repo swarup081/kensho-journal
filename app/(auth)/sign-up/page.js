@@ -2,13 +2,12 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-// UPDATED: Import useSearchParams to correctly read URL parameters
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { signup } from './actions';
 import Modal from '@/components/shared/Modal';
-import { AlertTriangle } from 'lucide-react'; // Import an icon for the error message
+import { AlertTriangle } from 'lucide-react';
+import Spinner from '@/components/ui/Spinner';
 
-// --- (Modal content components like TermsContent, etc., remain unchanged) ---
 const TermsContent = () => (
     <>
       <p className="lead"><strong>Last Updated:</strong> August 2, 2025</p>
@@ -145,10 +144,25 @@ const CookiesContent = () => (
 
 export default function SignUpPage() {
   const [openModal, setOpenModal] = useState(null);
-  
-  // UPDATED: Correctly get searchParams using the hook
-  const searchParams = useSearchParams();
-  const message = searchParams.get('message');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(useSearchParams().get('message'));
+  const router = useRouter();
+
+  const handleSignUpSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setMessage(null);
+
+    const formData = new FormData(event.currentTarget);
+    const result = await signup(formData);
+
+    if (result.success) {
+      router.push(result.redirect);
+    } else {
+      setMessage(result.message);
+      setLoading(false);
+    }
+  };
 
   const modalData = {
     terms: { title: 'Terms and Conditions', content: <TermsContent /> },
@@ -164,35 +178,34 @@ export default function SignUpPage() {
             <h1 className="text-2xl font-semibold text-gray-900">Kensho Journal</h1>
             <p className="text-gray-500 mt-2">Create your account</p>
           </div>
-          <form action={signup} className="space-y-4">
+          <form onSubmit={handleSignUpSubmit} className="space-y-4">
             <div>
-              <input type="text" id="name" name="name" className="w-full px-4 py-3 border-b-2 bg-transparent border-gray-300 focus:outline-none focus:border-purple-500 transition-colors" placeholder="Name" required />
+              <input type="text" id="name" name="name" className="w-full px-4 py-3 border-b-2 bg-transparent border-gray-300 focus:outline-none focus:border-purple-500 transition-colors" placeholder="Name" required disabled={loading} />
             </div>
             <div>
-              <input type="email" id="email" name="email" className="w-full px-4 py-3 border-b-2 bg-transparent border-gray-300 focus:outline-none focus:border-purple-500 transition-colors" placeholder="Email" required />
+              <input type="email" id="email" name="email" className="w-full px-4 py-3 border-b-2 bg-transparent border-gray-300 focus:outline-none focus:border-purple-500 transition-colors" placeholder="Email" required disabled={loading} />
             </div>
             <div>
-              <input type="tel" id="phone" name="phone" className="w-full px-4 py-3 border-b-2 bg-transparent border-gray-300 focus:outline-none focus:border-purple-500 transition-colors" placeholder="Phone Number" required />
+              <input type="tel" id="phone" name="phone" className="w-full px-4 py-3 border-b-2 bg-transparent border-gray-300 focus:outline-none focus:border-purple-500 transition-colors" placeholder="Phone Number" required disabled={loading} />
             </div>
             <div>
-              <input type="password" id="password" name="password" className="w-full px-4 py-3 border-b-2 bg-transparent border-gray-300 focus:outline-none focus:border-purple-500 transition-colors" placeholder="Password" required />
+              <input type="password" id="password" name="password" className="w-full px-4 py-3 border-b-2 bg-transparent border-gray-300 focus:outline-none focus:border-purple-500 transition-colors" placeholder="Password" required disabled={loading} />
             </div>
             <p className="text-xs text-center text-gray-500 leading-relaxed">
               By clicking Sign Up, you agree to our{' '}
-              <button type="button" onClick={() => setOpenModal('terms')} className="font-medium text-purple-600 hover:text-purple-800 focus:outline-none underline-offset-2 hover:underline">
+              <button type="button" onClick={() => setOpenModal('terms')} className="font-medium text-purple-600 hover:text-purple-800 focus:outline-none underline-offset-2 hover:underline" disabled={loading}>
                 Terms
               </button>
               ,{' '}
-              <button type="button" onClick={() => setOpenModal('privacy')} className="font-medium text-purple-600 hover:text-purple-800 focus:outline-none underline-offset-2 hover:underline">
+              <button type="button" onClick={() => setOpenModal('privacy')} className="font-medium text-purple-600 hover:text-purple-800 focus:outline-none underline-offset-2 hover:underline" disabled={loading}>
                 Privacy Policy
               </button>{' '}
               &{' '}
-              <button type="button" onClick={() => setOpenModal('cookies')} className="font-medium text-purple-600 hover:text-purple-800 focus:outline-none underline-offset-2 hover:underline">
+              <button type="button" onClick={() => setOpenModal('cookies')} className="font-medium text-purple-600 hover:text-purple-800 focus:outline-none underline-offset-2 hover:underline" disabled={loading}>
                 Cookies Policy
               </button>
               .
             </p>
-            {/* UPDATED: Redesigned error message UI */}
             {message && (
               <div className="flex items-start gap-3 text-sm font-semibold text-red-600 bg-red-500/10 p-3 rounded-lg border border-red-500/20">
                 <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5" />
@@ -201,9 +214,10 @@ export default function SignUpPage() {
             )}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-3 rounded-lg shadow-md transition-all duration-300"
+              className="w-full bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-3 rounded-lg shadow-md transition-all duration-300 flex items-center justify-center disabled:opacity-75"
+              disabled={loading}
             >
-              Sign Up
+              {loading ? <Spinner className="h-5 w-5" /> : 'Sign Up'}
             </button>
           </form>
           <p className="text-center text-sm text-gray-500">

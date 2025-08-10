@@ -2,18 +2,35 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { signin } from './actions';
 import { requestPasswordReset } from '../forgot-password/actions';
 import Modal from '@/components/shared/Modal';
 import { AlertTriangle } from 'lucide-react';
+import Spinner from '@/components/ui/Spinner';
 
 export default function SignInPage() {
   const [isForgotModalOpen, setForgotModalOpen] = useState(false);
   const [resetMessage, setResetMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(useSearchParams().get('message'));
+  const router = useRouter();
 
-  const searchParams = useSearchParams();
-  const message = searchParams.get('message');
+  const handleSignInSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setMessage(null);
+
+    const formData = new FormData(event.currentTarget);
+    const result = await signin(formData);
+
+    if (result.success) {
+      router.push(result.redirect);
+    } else {
+      setMessage(result.message);
+      setLoading(false);
+    }
+  };
 
   const handleResetSubmit = async (formData) => {
     const result = await requestPasswordReset(formData);
@@ -33,7 +50,7 @@ export default function SignInPage() {
             <h1 className="text-2xl font-semibold text-gray-900">Welcome Back</h1>
             <p className="text-gray-500 mt-2">Sign in to continue to Kensho Journal</p>
           </div>
-          <form action={signin} className="space-y-4">
+          <form onSubmit={handleSignInSubmit} className="space-y-4">
             <div>
               <input
                 type="email"
@@ -42,6 +59,7 @@ export default function SignInPage() {
                 className="w-full px-4 py-3 border-b-2 bg-transparent border-gray-300 focus:outline-none focus:border-purple-500 transition-colors"
                 placeholder="Email"
                 required
+                disabled={loading}
               />
             </div>
             <div>
@@ -52,6 +70,7 @@ export default function SignInPage() {
                 className="w-full px-4 py-3 border-b-2 bg-transparent border-gray-300 focus:outline-none focus:border-purple-500 transition-colors"
                 placeholder="Password"
                 required
+                disabled={loading}
               />
             </div>
             <div className="text-right">
@@ -59,6 +78,7 @@ export default function SignInPage() {
                 type="button"
                 onClick={openModal}
                 className="text-sm font-medium text-purple-600 hover:text-purple-800 hover:underline cursor-pointer"
+                disabled={loading}
               >
                 Forgot Password?
               </button>
@@ -71,10 +91,10 @@ export default function SignInPage() {
             )}
             <button
               type="submit"
-              // UPDATED: Removed hover effects
-              className="w-full bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-3 rounded-lg shadow-md transition-all duration-300"
+              className="w-full bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-3 rounded-lg shadow-md transition-all duration-300 flex items-center justify-center disabled:opacity-75"
+              disabled={loading}
             >
-              Sign In
+              {loading ? <Spinner className="h-5 w-5" /> : 'Sign In'}
             </button>
           </form>
           <p className="text-center text-sm text-gray-500">
