@@ -75,7 +75,12 @@ const CalendarPage = () => {
           });
           if (response.ok) {
             const data = await response.json();
-            setDailyAnalysis(data);
+            // --- FIX: Ensure that emotions is always an array to prevent chart errors ---
+            const validatedData = {
+              ...data,
+              emotions: Array.isArray(data.emotions) ? data.emotions : [],
+            };
+            setDailyAnalysis(validatedData);
           } else {
             setDailyAnalysis({ summary: 'Could not load summary.', emotions: [] });
           }

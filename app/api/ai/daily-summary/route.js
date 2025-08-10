@@ -50,33 +50,69 @@ export async function POST(request) {
       return NextResponse.json({ summary: "No entries for this day.", emotions: [] });
     }
 
-    // For single entries, we still use the direct summary. No AI call needed.
+    // --- FIX: Add optimized path for single entries that still processes emotions ---
     if (entries.length === 1) {
+      const entry = entries[0];
+      const emotions = entry.ai_emotions || [];
+      const top5Emotions = emotions
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5)
+        .map(e => ({ ...e, score: parseFloat(e.score.toFixed(1)) }));
+      
       return NextResponse.json({
-        summary: entries[0].ai_summary || "A moment of reflection.",
-        emotions: entries[0].ai_emotions || [],
+        summary: entry.ai_summary || "A moment of reflection.",
+        emotions: top5Emotions,
       });
     }
 
     // --- FINAL WORKAROUND ---
-    // For multiple entries, we will ALWAYS generate a new summary and will NOT cache it.
-    // This guarantees the summary is always up-to-date, at the cost of consistency and efficiency.
+    // --- FIX: Manually calculate top 5 emotions and only ask AI for summary ---
     
-    const combinedAnalysis = entries.map(e => {
-      return `Entry Summary: ${e.ai_summary}\
-Emotions: ${JSON.stringify(e.ai_emotions)}`;
-    }).join('\n\n---\n\n');
+    // 1. Consolidate and process emotions
+    const allEmotions = entries.flatMap(e => e.ai_emotions || []);
+    const emotionScores = {};
+    const emotionCounts = {};
+
+    if (allEmotions.length > 0) {
+      allEmotions.forEach(({ emotion, score }) => {
+        if (emotion && typeof score === 'number') {
+          emotionScores[emotion] = (emotionScores[emotion] || 0) + score;
+          emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
+        }
+      });
+    }
+
+    const averagedEmotions = Object.keys(emotionScores).map(emotion => ({
+      emotion,
+      score: parseFloat((emotionScores[emotion] / emotionCounts[emotion]).toFixed(1)),
+    }));
+
+    const top5Emotions = averagedEmotions
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5);
+
+    // 2. Prepare content for AI summary generation
+    const combinedSummaries = entries.map(e => e.ai_summary).filter(Boolean).join('\n\n---\n\n');
+
+    if (!combinedSummaries) {
+      // If no summaries, return top emotions with a generic summary
+      return NextResponse.json({
+        summary: "A day of quiet reflection.",
+        emotions: top5Emotions,
+      });
+    }
 
     const prompt = `
-      Analyze the following collection of AI-generated summaries and emotion analyses from a user's journal entries for a single day. Your task is to create a single, overarching "Overall Summary" and a consolidated "Overall Emotion Flow".
+      Analyze the following collection of AI-generated summaries from a user's journal entries for a single day. Your task is to create a single, overarching "Overall Summary" that captures the key themes and feelings of the day.
 
-      Here are the individual analyses:
+      Here are the individual summaries:
       ---
-      ${combinedAnalysis}
+      ${combinedSummaries}
       ---
-      Your response must be a single JSON object with "summary" and "emotions" keys.
+      Your response must be a single JSON object with a single key "summary".
     `;
 
+    // 3. Call AI for summary and combine with processed emotions
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
@@ -84,7 +120,11 @@ Emotions: ${JSON.stringify(e.ai_emotions)}`;
     });
 
     const analysis = JSON.parse(response.choices[0].message.content);
-    return NextResponse.json(analysis);
+    
+    return NextResponse.json({
+      summary: analysis.summary,
+      emotions: top5Emotions,
+    });
 
   } catch (error) {
     console.error('AI daily summary error:', error);
