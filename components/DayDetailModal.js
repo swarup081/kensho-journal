@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { convertToHtml } from '@/lib/htmlConverter'; 
+import { convertToHtml } from '@/lib/htmlConverter';
+import DailyDigestSkeleton from './DailyDigestSkeleton';
 
 const EmotionChart = dynamic(() => import('@/components/EmotionChart'), {
     ssr: false,
@@ -156,16 +157,20 @@ export default function DayDetailModal({ entries, isOpen, onClose, dailyAnalysis
                   transition={{ duration: 0.3 }}
                 >
                   {activeTab === 'summary' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h3 className="text-xl font-semibold text-purple-300 mb-2" style={{ fontFamily: "'Lora', serif" }}>Overall Summary</h3>
-                            <p className="text-gray-300 italic">&quot;{displayAnalysis.summary}&quot;</p>
-                        </div>
-                        <div className="bg-gray-900/40 p-4 rounded-xl">
-                            <h3 className="font-semibold text-purple-300 mb-2 text-center">Overall Emotion Flow</h3>
-                            <EmotionChart data={displayAnalysis.emotions} />
-                        </div>
-                    </div>
+                    !dailyAnalysis ? (
+                      <DailyDigestSkeleton />
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                              <h3 className="text-xl font-semibold text-purple-300 mb-2" style={{ fontFamily: "'Lora', serif" }}>Overall Summary</h3>
+                              <p className="text-gray-300 italic">&quot;{displayAnalysis.summary}&quot;</p>
+                          </div>
+                          <div className="bg-gray-900/40 p-4 rounded-xl">
+                              <h3 className="font-semibold text-purple-300 mb-2 text-center">Overall Emotion Flow</h3>
+                              <EmotionChart data={displayAnalysis.emotions} />
+                          </div>
+                      </div>
+                    )
                   )}
 
                   {activeTab === 'entries' && (

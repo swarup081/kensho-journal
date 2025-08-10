@@ -15,6 +15,7 @@ import {
 } from 'date-fns';
 // --- THE FIX: Using the correct alias path for your folder structure ---
 import DayDetailModal from '@/components/DayDetailModal'; 
+import CalendarSkeleton from '@/components/CalendarSkeleton';
 
 const CalendarPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -98,6 +99,10 @@ const CalendarPage = () => {
 
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
+
+  if (loading) {
+    return <CalendarSkeleton />;
+  }
 
   return (
     <>
