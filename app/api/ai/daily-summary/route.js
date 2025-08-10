@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
@@ -7,6 +8,25 @@ const openai = new OpenAI({
 });
 
 export async function POST(request) {
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        get(name) {
+          return cookieStore.get(name)?.value
+        },
+        set(name, value, options) {
+          cookieStore.set({ name, value, ...options })
+        },
+        remove(name, options) {
+          cookieStore.set({ name, value: '', ...options })
+        },
+      },
+    }
+  );
+
   const { date, userId } = await request.json();
 
   if (!date || !userId) {
@@ -18,7 +38,7 @@ export async function POST(request) {
 
   const endDate = new Date(date);
   endDate.setHours(23, 59, 59, 999);
-  const dateString = startDate.toISOString().slice(0, 10); // YYYY-MM-DD format
+  const dateString = startDate.toISOString().slice(0, 10);
 
   try {
     // 1. Check for an existing daily summary
@@ -29,7 +49,7 @@ export async function POST(request) {
       .eq('date', dateString)
       .single();
 
-    if (summaryError && summaryError.code !== 'PGRST116') { // Ignore 'not found' error
+    if (summaryError && summaryError.code !== 'PGRST116') {
       console.error('Error fetching existing summary:', summaryError);
     }
 
@@ -55,30 +75,36 @@ export async function POST(request) {
     }
 
     if (entries.length === 1) {
-      return NextResponse.json({
+      const analysis = {
         summary: entries[0].ai_summary || "A moment of reflection.",
         emotions: entries[0].ai_emotions || [],
-      });
+      };
+      return NextResponse.json(analysis);
     }
 
-    const combinedContent = entries.map(e => e.content).join('\n\n---\n\n');
+    const combinedAnalysis = entries.map(e => {
+      return `Entry Summary: ${e.ai_summary}\
+Emotions: ${JSON.stringify(e.ai_emotions)}`;
+    }).join('\n\n---\n\n');
 
     const prompt = `
-      Analyze the following collection of journal entries from a single day and provide a consolidated summary and emotional analysis in JSON format. The entries are:
+      Analyze the following collection of AI-generated summaries and emotion analyses from a user's journal entries for a single day. Your task is to create a single, overarching "Overall Summary" and a consolidated "Overall Emotion Flow".
+
+      Here are the individual analyses:
       ---
-      ${combinedContent}
+      ${combinedAnalysis}
       ---
-      Your response must be a single JSON object with the following keys:
-      - "summary": A concise, one or two-sentence summary of the entire day's mood and themes.
-      - "emotions": An array of the top 3 overall emotions for the day. Each element must be an object with "emotion" (string) and "score" (integer, 1-10).
+      Based on the provided data, generate a response in JSON format. Your response must be a single JSON object with the following keys:
+      - "summary": A concise, one or two-sentence summary that synthesizes the themes and moods from all the individual summaries. This should reflect the entire day's experience.
+      - "emotions": An array of the top 3 most prominent emotions for the entire day. Each element must be an object with "emotion" (string) and "score" (integer, 1-10), representing the consolidated emotional state.
 
       Example Response:
       {
-        "summary": "The user had a productive day, balancing work-related stress with a sense of personal accomplishment.",
+        "summary": "The user experienced a day of mixed emotions, navigating professional challenges while finding moments of personal peace and reflection.",
         "emotions": [
-          { "emotion": "Productive", "score": 8 },
-          { "emotion": "Stressed", "score": 5 },
-          { "emotion": "Content", "score": 7 }
+          { "emotion": "Focused", "score": 8 },
+          { "emotion": "Anxious", "score": 6 },
+          { "emotion": "Calm", "score": 7 }
         ]
       }
     `;
@@ -91,7 +117,6 @@ export async function POST(request) {
 
     const analysis = JSON.parse(response.choices[0].message.content);
 
-    // --- FIX: Upsert the new summary to the database ---
     const { error: upsertError } = await supabase
       .from('daily_summaries')
       .upsert({
@@ -103,7 +128,6 @@ export async function POST(request) {
 
     if (upsertError) {
       console.error('Failed to save daily summary:', upsertError);
-      // Non-critical error, so we still return the analysis to the user
     }
 
     return NextResponse.json(analysis);
