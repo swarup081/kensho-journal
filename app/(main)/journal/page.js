@@ -79,37 +79,28 @@ const JournalPage = () => {
     setModalAnalysis(null);
     setIsModalOpen(true);
 
-    const { data, error } = await supabase
-      .from('journal_entries')
-      .insert([{ content: markdownContent, user_id: user.id }])
-      .select('id').single();
-
-    if (error) {
-      console.error('Error saving entry:', error);
-      setIsSaving(false); setIsModalOpen(false); return;
-    }
-
     try {
       const analysisResponse = await fetch('/api/ai/analyze', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ entryId: data.id, content: markdownContent }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: markdownContent }),
       });
 
       if (!analysisResponse.ok) {
-        throw new Error('Failed to get analysis');
+        const errorBody = await analysisResponse.json().catch(() => ({ error: 'Analysis failed. Please try again.' }));
+        throw new Error(errorBody.error || 'Failed to get analysis');
       }
 
       const analysisResult = await analysisResponse.json();
+      setModalAnalysis(analysisResult);
 
-      setModalAnalysis({ ...analysisResult, entryId: data.id });
+      // Clear the editor on success
       setEntryHtml('');
       editor?.commands.clearContent(true);
+
     } catch (error) {
-      console.error('Error getting analysis:', error);
-      // Optionally, show an error message to the user in the modal
+      console.error('Error during save and analyze:', error.message);
+      setModalAnalysis({ error: error.message });
     } finally {
       setIsSaving(false);
     }

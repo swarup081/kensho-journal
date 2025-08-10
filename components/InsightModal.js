@@ -94,21 +94,30 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
           >
             <header className="p-6 text-center border-b border-gray-800/50 relative">
               <h1 className="text-2xl font-bold text-gray-100" style={{ fontFamily: "'Lora', serif" }}>
-                {analysis ? "Your Insight" : "Analyzing..."}
+                {analysis?.error ? "Analysis Failed" : analysis ? "Your Insight" : "Analyzing..."}
               </h1>
               <p className="text-sm text-gray-500 mt-1">
-                {analysis ? "AI Analysis of your recent entry" : "Please wait while we analyze your entry."}
+                {analysis?.error ? "We couldn't analyze this entry." : analysis ? "AI Analysis of your recent entry" : "Please wait while we analyze your entry."}
               </p>
               <button onClick={onClose} className="absolute top-4 right-4 p-1 rounded-full text-gray-400 hover:bg-gray-800 transition-colors">
                 <X size={20} />
               </button>
             </header>
 
-            {/* UPDATED: Use AnimatePresence to ensure only one view is visible at a time */}
             <AnimatePresence mode="wait">
               {!analysis ? (
                 <motion.div key="skeleton" {...motionProps}>
                   <InsightModalSkeleton />
+                </motion.div>
+              ) : analysis.error ? (
+                <motion.div key="error" {...motionProps} className="p-8 text-center">
+                    <p className="text-red-400">{analysis.error}</p>
+                    <button
+                        onClick={onClose}
+                        className="mt-6 bg-purple-600/50 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-purple-600/80 transition-all duration-300"
+                    >
+                        Close
+                    </button>
                 </motion.div>
               ) : (
                 <motion.div key="content" {...motionProps}>
@@ -145,7 +154,7 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
                               value={reflection}
                               onChange={(e) => setReflection(e.target.value)}
                               placeholder="Write your thoughts..."
-                              className="w-full p-3 bg-gray-900/60 border border-gray-700 rounded-lg text-gray-300 focus:ring-2 focus:ring-purple-500 focus:outline-none transition"
+                              className="w-full p-3 bg-gray-900/60 border border-gray-700 rounded-lg text-gray-300 focus:ring-2 focus:ring-purple-500 focus:outline-none transition resize-none"
                               rows={3}
                             />
                             <div className="mt-3 flex justify-end gap-3">
