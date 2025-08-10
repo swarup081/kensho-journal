@@ -78,12 +78,6 @@ const JournalEntryCard = ({ entry, demoAnalysis }) => {
                                       dangerouslySetInnerHTML={{ __html: entryHtml }}
                                     />
                                 </div>
-                                {entry.ai_question_response && (
-                                    <div>
-                                        <h3 className="font-semibold text-purple-300">Your Reflection</h3>
-                                        <p className="text-gray-300 italic text-sm mt-2">&quot;{entry.ai_question_response}&quot;</p>
-                                    </div>
-                                )}
                             </div>
                             <div className="space-y-4">
                                 <div>
