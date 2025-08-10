@@ -34,21 +34,6 @@ export async function POST(request) {
   const dateString = startDate.toISOString().slice(0, 10);
 
   try {
-    const { data: existingSummary, error: summaryError } = await supabase
-      .from('daily_summaries')
-      .select('summary, emotions')
-      .eq('user_id', userId)
-      .eq('date', dateString)
-      .single();
-
-    if (summaryError && summaryError.code !== 'PGRST116') {
-      console.error('Error fetching existing summary:', summaryError);
-    }
-
-    if (existingSummary) {
-      return NextResponse.json(existingSummary);
-    }
-
     const { data: entries, error } = await supabase
       .from('journal_entries')
       .select('ai_summary, ai_emotions')
@@ -57,7 +42,7 @@ export async function POST(request) {
       .lte('created_at', endDate.toISOString());
 
     if (error) {
-      console.error('Supabase fetch error:', error);
+      console.error('Supabase fetch error:', error); 
       return NextResponse.json({ error: 'Failed to fetch entries.' }, { status: 500 });
     }
 
@@ -65,16 +50,18 @@ export async function POST(request) {
       return NextResponse.json({ summary: "No entries for this day.", emotions: [] });
     }
 
+    // For single entries, we still use the direct summary. No AI call needed.
     if (entries.length === 1) {
-      const analysis = {
+      return NextResponse.json({
         summary: entries[0].ai_summary || "A moment of reflection.",
         emotions: entries[0].ai_emotions || [],
-      };
-      // Cache the summary for single-entry days as well
-      await supabase.from('daily_summaries').upsert({ user_id: userId, date: dateString, summary: analysis.summary, emotions: analysis.emotions }, { onConflict: 'user_id, date' });
-      return NextResponse.json(analysis);
+      });
     }
 
+    // --- FINAL WORKAROUND ---
+    // For multiple entries, we will ALWAYS generate a new summary and will NOT cache it.
+    // This guarantees the summary is always up-to-date, at the cost of consistency and efficiency.
+    
     const combinedAnalysis = entries.map(e => {
       return `Entry Summary: ${e.ai_summary}\
 Emotions: ${JSON.stringify(e.ai_emotions)}`;
@@ -87,19 +74,7 @@ Emotions: ${JSON.stringify(e.ai_emotions)}`;
       ---
       ${combinedAnalysis}
       ---
-      Your response MUST be a single JSON object with the following keys and value types:
-      - "summary": A string containing a concise, one or two-sentence summary of the entire day's mood and themes.
-      - "emotions": An array of objects. Each object must have two keys: "emotion" (string) and "score" (integer from 1-10). Provide the top 3 overall emotions.
-
-      Example of a valid response:
-      {
-        "summary": "The user had a productive day, balancing work-related stress with a sense of personal accomplishment.",
-        "emotions": [
-          { "emotion": "Productive", "score": 8 },
-          { "emotion": "Stressed", "score": 5 },
-          { "emotion": "Content", "score": 7 }
-        ]
-      }
+      Your response must be a single JSON object with "summary" and "emotions" keys.
     `;
 
     const response = await openai.chat.completions.create({
@@ -109,14 +84,6 @@ Emotions: ${JSON.stringify(e.ai_emotions)}`;
     });
 
     const analysis = JSON.parse(response.choices[0].message.content);
-
-    // Ensure the 'emotions' field is an array before saving
-    if (!Array.isArray(analysis.emotions)) {
-      analysis.emotions = [];
-    }
-
-    await supabase.from('daily_summaries').upsert({ user_id: userId, date: dateString, summary: analysis.summary, emotions: analysis.emotions }, { onConflict: 'user_id, date' });
-
     return NextResponse.json(analysis);
 
   } catch (error) {
