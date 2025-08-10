@@ -64,7 +64,7 @@ export async function POST(request) {
     `;
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-3.5-turbo', //change it to mini 5 when available
       messages: [{ role: 'user', content: prompt }],
       response_format: { type: 'json_object' },
     });

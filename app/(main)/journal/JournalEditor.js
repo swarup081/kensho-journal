@@ -14,23 +14,30 @@ export default function JournalEditor() {
         setIsLoading(true);
         setError(null);
 
-        // This is the key part: it inserts the data into your Supabase table
-        const { error } = await supabase
-            .from('journal_entries') // The table name must be exact
-            .insert([{ content: content }]); // The column name must be exact
+        try {
+            const response = await fetch('/api/entries', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content }),
+            });
 
-        if (error) {
-            console.error('Error saving journal:', error);
-            setError('Could not save your journal entry. Please try again.');
-        } else {
-            // Success! Clear the editor and maybe redirect or show a success message.
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to save entry');
+            }
+
             setContent('');
-            // Optional: Redirect to dashboard after saving
-            router.push('/dashboard');
-            router.refresh(); // Important to show new data
+            // Redirect to the journal page to see the new entry.
+            router.push('/journal');
+            router.refresh(); // This is important to refetch server-side props
+        } catch (err) {
+            console.error('Error saving journal:', err);
+            setError(err.message || 'Could not save your journal entry. Please try again.');
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(false);
     };
 
     return (
