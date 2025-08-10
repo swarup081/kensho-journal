@@ -40,31 +40,33 @@ export async function POST(request) {
 
     // 2. Get AI analysis
     const prompt = `
-      Analyze the following journal entry and provide a structured analysis.
-      The response MUST be a single, valid JSON object.
-      ALL fields in the JSON schema are MANDATORY.
+      Analyze the following journal entry with a calm, gentle, and reassuring tone in 15-20 words. Your personality should be insightful, curious, and empathetic, acting as a partner in reflection. Use simple, easy, clear, and slightly poetic language.
+      Focus on the emotional and psychological aspects, avoiding technical jargon. The analysis should feel like a warm conversation, not a clinical report.
+
       Journal Entry:
       ---
       ${content}
       ---
-      JSON Schema:
+
+      The response MUST be a single, valid JSON object with the following schema:
       {
-        "summary": "A concise, one-sentence summary of the entry.",
-        "keywords": ["An", "array", "of", "5-7", "relevant", "keywords", "or", "themes"],
+        "title": "The Weight of a Successful Launch",
+        "summary": "In a compassionate tone, it feels like even though the launch was a success, there's a disconnect between the external celebration and your internal sense of fulfillment.",
+        "keywords": ["Achievement Gap", "Emotional Disconnect", "Burnout", "Work-Life", "Work"],
+        "insightfulQuestion": "You've described a gap between the success and the feeling. What's one thing, however small, that used to bring you joy in your work that feels absent right now?",
         "emotions": [
           { "emotion": "The name of the emotion", "score": "An integer from 1-10" },
           { "emotion": "The name of the emotion", "score": "An integer from 1-10" },
           { "emotion": "The name of the emotion", "score": "An integer from 1-10" }
-        ],
-        "insightfulQuestion": "A single, open-ended, insightful question that encourages further reflection.",
-        "title": "A short, catchy title for the journal entry (max 5 words)."
+        ]
       }
+
       Ensure the "emotions" array contains exactly 3 objects.
       Do not include any text or formatting outside of the main JSON object.
     `;
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo', //change it to mini 5 when available
+      model: 'gpt-5-mini',
       messages: [{ role: 'user', content: prompt }],
       response_format: { type: 'json_object' },
     });

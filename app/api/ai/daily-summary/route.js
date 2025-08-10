@@ -103,18 +103,23 @@ export async function POST(request) {
     }
 
     const prompt = `
-      Analyze the following collection of AI-generated summaries from a user's journal entries for a single day. Your task is to create a single, overarching "Overall Summary" that captures the key themes and feelings of the day.
+      Analyze the following collection of AI-generated summaries from a user's journal entries for a single day in 15-20 words. Your task is to create a single, overarching "Overall Summary" that captures the key themes and feelings of the day.
+
+      Adopt a calm, gentle, and reassuring tone. Be insightful, curious, and empathetic, acting as a partner in reflection. Use simple, easy, clear, and slightly poetic language. The summary should feel like reading a thoughtful book, not a technical manual.
 
       Here are the individual summaries:
       ---
       ${combinedSummaries}
       ---
-      Your response must be a single JSON object with a single key "summary".
+      Your response must be a single JSON object with a single key "summary". For example:
+      {
+        "summary": "The launch went well, and everyone’s smiling, but inside it feels different. It’s not disappointment—just a sense that something deeper is still missing. Maybe the real win will come when it feels right in both the world and in you."
+      }
     `;
 
     // 3. Call AI for summary and combine with processed emotions
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-5-mini',
       messages: [{ role: 'user', content: prompt }],
       response_format: { type: 'json_object' },
     });
