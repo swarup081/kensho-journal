@@ -10,8 +10,8 @@ import Spinner from '@/components/ui/Spinner';
 
 const TermsContent = () => (
     <>
-      <p className="lead"><strong>Last Updated:</strong> August 2, 2025</p>
-      <p>These Terms and Conditions (&quot;Terms&quot;) constitute a legally binding agreement made between you, whether personally or on behalf of an entity (&quot;you&quot; or &quot;User&quot;), and <strong>Swarup Das</strong> (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), concerning your access to and use of the Kensho Journal website and application (the &quot;Service&quot;).</p>
+      <p className="lead"><strong>Last Updated:</strong> August 11, 2025</p>
+      <p>These Terms and Conditions (&quot;Terms&quot;) constitute a legally binding agreement made between you, whether personally or on behalf of an entity (&quot;you&quot; or &quot;User&quot;), and <strong>KenshoJournal</strong> (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), concerning your access to and use of the Kensho Journal website and application (the &quot;Service&quot;).</p>
       <p>By creating an account or using the Service, you agree that you have read, understood, and agree to be bound by all of these Terms.</p>
       
       <h3>Definitions</h3>
@@ -62,14 +62,14 @@ const TermsContent = () => (
       <h3>Contact Us</h3>
       <p>If you have any questions about these Terms, please contact us at <strong>kenshojournal.help@gmail.com</strong>.</p>
       
-      <p className="!text-center !mt-8">© 2025 Swarup Das. All Rights Reserved.</p>
+      <p className="!text-center !mt-8">© 2025 Kensho Journal. All Rights Reserved.</p>
     </>
 );
 
 const PrivacyContent = () => (
     <>
-      <p className="lead"><strong>Last Updated:</strong> August 2, 2025</p>
-      <p>This Privacy Policy describes how <strong>Swarup Das</strong> (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects, uses, and protects your information when you use the Kensho Journal Service, in compliance with applicable data protection laws including <strong>India&apos;s Digital Personal Data Protection (DPDP) Act, 2023.</strong></p>
+      <p className="lead"><strong>Last Updated:</strong> August 11, 2025</p>
+      <p>This Privacy Policy describes how <strong>KenshoJournal</strong> (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects, uses, and protects your information when you use the Kensho Journal Service, in compliance with applicable data protection laws including <strong>India&apos;s Digital Personal Data Protection (DPDP) Act, 2023.</strong></p>
       
       <h3>Information We Collect</h3>
       <ul>
@@ -78,7 +78,7 @@ const PrivacyContent = () => (
       </ul>
 
       <h3>How We Use Your Information</h3>
-      <p>Your information is used to provide, maintain, and improve the Service. We do not sell your personal data. By using the Service, you provide your consent for us to process your data for these specified purposes.</p>
+      <p>Your information is used to provide, maintain, and improve the Service.We may use your data to improve and train our AI models. All data will be processed in an anonymized manner, without storing or associating it with your name or any personally identifiable information. If you do not wish for your data to be used for these purposes, you may contact us at <strong>kenshojournal.help@gmail.com</strong> We do not sell or disclose your data to any third parties for commercial purposes. By using the Service, you provide your consent for us to process your data for these specified purposes.</p>
       
       <h3>Marketing and Communications</h3>
       <p>By providing your email address, you agree that we may occasionally send you emails about Service updates, new features, or other information related to Kensho Journal. You may opt out of receiving these marketing communications at any time by clicking the &quot;unsubscribe&quot; link provided in every email or by contacting us directly. Please note that you may still receive essential transactional emails related to your account (e.g., password resets).</p>
@@ -86,8 +86,8 @@ const PrivacyContent = () => (
       <h3>Data Sharing and Third-Party Services</h3>
       <p>We share data only with essential service providers (&quot;Data Processors&quot;) who help us operate. We ensure our partners adhere to strict data protection standards.</p>
       <ul>
-          <li><strong>Supabase:</strong> For secure database hosting and authentication.</li>
-          <li><strong>OpenAI:</strong> To process your User Content for AI analysis features. <strong>We do not use your User Content or AI outputs for training third-party models. Your data is sent to OpenAI only for the purpose of generating your personalized insights and is not used to improve their AI systems.</strong></li>
+          <li><strong>Supabase :</strong> For secure database hosting and authentication.</li>
+          <li><strong>AI Processing :</strong> Your content is processed solely for providing AI-based analysis features. We do not use your content or AI outputs for training third-party models. Your data is used only for generating your personalized insights and is not used to improve any external AI systems.</li>
       </ul>
 
       <h3>Your Rights and Data Control</h3>
@@ -118,7 +118,7 @@ const PrivacyContent = () => (
 
 const CookiesContent = () => (
     <>
-      <p className="lead"><strong>Last Updated:</strong> August 2, 2025</p>
+      <p className="lead"><strong>Last Updated:</strong> August 11, 2025</p>
       <p>This Cookie Policy explains how Kensho Journal uses essential cookies. By using our Service, you agree to the use of cookies as described in this policy.</p>
       
       <h3>What Are Cookies?</h3>

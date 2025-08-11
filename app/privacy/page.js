@@ -34,7 +34,8 @@ export default function PrivacyPage() {
 
           <h2 className="text-2xl font-semibold text-gray-900 mt-8">How We Use Your Information</h2>
           <p>
-            Your information is used to provide, maintain, and improve the Service. We do not sell your personal data. By using the Service, you provide your consent for us to process your data for these specified purposes.
+            Your information is used to provide, maintain, and improve the Service. We may use your data to improve and train our AI models. All data will be processed in an anonymized manner, without storing or associating it with your name or any personally identifiable information. If you do not wish for your data to be used for these purposes, you may contact us at kenshojournal.help@gmail.com. We do not sell or disclose your data to any third parties for commercial purposes.
+           By using the Service, you provide your consent for us to process your data for these specified purposes.
           </p>
 
           <h2 className="text-2xl font-semibold text-gray-900 mt-8">Marketing and Communications</h2>
