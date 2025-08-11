@@ -40,7 +40,7 @@ export default function VerifyOtpPage() {
             Confirm Your Email
           </h1>
           <p className="text-gray-500 mt-3 leading-relaxed">
-            We've sent a verification link to your email address:
+            We&apos;ve sent a verification link to your email address:
           </p>
           {email && (
             <p className="font-semibold text-gray-800 mt-2 break-words">
@@ -63,7 +63,7 @@ export default function VerifyOtpPage() {
           )}
 
           <div className="text-center text-sm pt-4">
-            <span className="text-gray-500">Didn't receive an email? </span>
+            <span className="text-gray-500">Didn&apos;t receive an email? </span>
             <button 
               type="submit" 
               disabled={isSubmitting}

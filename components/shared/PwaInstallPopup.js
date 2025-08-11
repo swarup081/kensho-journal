@@ -56,7 +56,7 @@ const PwaInstallPopup = ({ show, onDismiss }) => {
             
             <div className="p-6 pt-0">
                 <p className="text-center text-gray-300 mb-6">
-                    For faster access and to use your journal even when you're offline, add Kensho to your home screen.
+                    For faster access and to use your journal even when you&apos;re offline, add Kensho to your home screen.
                 </p>
                 <div className="flex flex-col gap-3">
                     <button 
