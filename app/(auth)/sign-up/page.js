@@ -54,7 +54,7 @@ const TermsContent = () => (
       <p>You may request account termination by emailing us at <strong>kenshojournal.help@gmail.com</strong>. We reserve the right to suspend or terminate your account if you violate these Terms.</p>
       
       <h3>Changes to These Terms</h3>
-      <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will notify you of any material changes by providing a <strong>prominent notice within the Service (such as a pop-up)</strong>. We will also update the &quot;Last Updated&quot; date at the top of these Terms. By continuing to access or use our Service after any revisions become effective, you agree to be bound by the revised terms.</p>
+      <p>We reserve the right to modify or replace these Terms at any time, without prior notice. The “Last Updated” date at the top of these Terms will reflect the most recent changes. Your continued access or use of our Service after such changes constitutes your acceptance of the revised Terms.</p>
       
       <h3>Governing Law</h3>
       <p>These Terms are governed by the laws of India. Any disputes will be subject to the exclusive jurisdiction of the courts located in <strong>Silchar, Assam</strong>.</p>
@@ -109,7 +109,7 @@ const PrivacyContent = () => (
       <p>This policy is designed to comply with India&apos;s Digital Personal Data Protection (DPDP) Act, 2023. We act as the &quot;Data Fiduciary&quot; for your personal data. If you have a grievance, you may contact our designated contact person at <strong>kenshojournal.help@gmail.com</strong>.</p>
       
       <h3>Changes to This Privacy Policy</h3>
-      <p>We may update this Privacy Policy from time to time. We will notify you of any changes <strong>by email and/or through a prominent notice within our Service</strong>. We will also update the “Last Updated” date at the top of this policy.</p>
+      <p>We reserve the right to modify or replace these Policy at any time, without prior notice. The “Last Updated” date at the top of these Terms will reflect the most recent changes. Your continued access or use of our Service after such changes constitutes your acceptance of the revised Terms.</p>
       
       <h3>Contact Us</h3>
       <p>For any privacy-related questions, please contact us at <strong>kenshojournal.help@gmail.com</strong>.</p>
