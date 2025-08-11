@@ -5,7 +5,8 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { BookText, CalendarDays, MessageSquare, User } from 'lucide-react';
 import { PwaProvider } from '@/app/context/PwaContext';
-import { BottomNavbar } from '@/components/shared/BottomNavbar'; // Import the new component
+import { BottomNavbar } from '@/components/shared/BottomNavbar';
+import { AdminNavLink } from '@/components/shared/AdminNavLink';
 
 const NavLink = ({ href, icon: Icon, children }) => {
   const pathname = usePathname();
@@ -29,7 +30,6 @@ export default function MainLayout({ children }) {
   return (
     <PwaProvider>
       <div className="min-h-screen bg-gray-900 text-white flex">
-        {/* UPDATED: Added "hidden md:flex" to hide the sidebar on mobile */}
         <aside className="hidden md:flex w-20 lg:w-64 bg-black/20 flex-col p-4 border-r border-gray-800 transition-all duration-300">
           <div className="mb-8 flex items-center justify-center lg:justify-start">
             <Image 
@@ -45,6 +45,7 @@ export default function MainLayout({ children }) {
             <NavLink href="/journal" icon={BookText}>Journal</NavLink>
             <NavLink href="/calendar" icon={CalendarDays}>Calendar</NavLink>
             <NavLink href="/feedback" icon={MessageSquare}>Feedback</NavLink>
+            <AdminNavLink />
           </nav>
           <div className="flex-grow"></div>
           <div className="border-t border-gray-700/50 pt-4">
@@ -52,12 +53,10 @@ export default function MainLayout({ children }) {
           </div>
         </aside>
         
-        {/* UPDATED: Added padding-bottom to prevent content from being hidden by the bottom nav on mobile */}
         <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
           {children}
         </main>
 
-        {/* ADDED: Render the new bottom navigation bar */}
         <BottomNavbar />
       </div>
     </PwaProvider>

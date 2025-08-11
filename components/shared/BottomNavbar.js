@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookText, CalendarDays, MessageSquare, User } from 'lucide-react';
+import { BookText, CalendarDays, MessageSquare, User, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabaseClient';
 
-const navLinks = [
+const baseNavLinks = [
   { href: '/journal', label: 'Journal', icon: BookText },
   { href: '/calendar', label: 'Calendar', icon: CalendarDays },
   { href: '/feedback', label: 'Feedback', icon: MessageSquare },
@@ -14,6 +16,43 @@ const navLinks = [
 
 export function BottomNavbar() {
   const pathname = usePathname();
+  const [navLinks, setNavLinks] = useState(baseNavLinks);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        
+        if (profile && profile.role === 'admin') {
+          // Check if admin link already exists to prevent duplicates on re-renders
+          if (!baseNavLinks.some(link => link.href === '/admin')) {
+            setNavLinks([
+              ...baseNavLinks,
+              { href: '/admin', label: 'Admin', icon: Shield },
+            ]);
+          }
+        } else {
+          setNavLinks(baseNavLinks);
+        }
+      }
+    };
+
+    fetchUserRole();
+    
+    // Listen for auth changes to update nav links if user logs in/out
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      fetchUserRole();
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-20">
@@ -23,11 +62,13 @@ export function BottomNavbar() {
       <div className="relative flex justify-around items-center h-full">
         {navLinks.map(({ href, label, icon: Icon }) => {
           const isActive = pathname === href;
+          const navItemWidth = 100 / navLinks.length;
           return (
             <Link
               key={href}
               href={href}
-              className="group relative flex flex-col items-center justify-center w-1/4 h-full text-xs"
+              className="group relative flex flex-col items-center justify-center h-full text-xs"
+              style={{ width: `${navItemWidth}%` }}
             >
               {/* Icon with updated active color */}
               <Icon 
