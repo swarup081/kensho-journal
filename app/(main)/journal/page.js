@@ -41,7 +41,7 @@ const JournalPage = () => {
       }),
       Underline,
       Placeholder.configure({
-        placeholder: "Let your thoughts flow...",
+        placeholder: "How is your day going?",
       }),
     ],
     content: entryHtml,

@@ -45,7 +45,7 @@ export default function JournalEditor() {
             <h2 className="text-xl font-bold text-white mb-4">New Entry</h2>
             <textarea
                 className="w-full h-60 p-3 bg-gray-800 text-gray-200 rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
-                placeholder="Let your thoughts flow..."
+                placeholder="How is your day going?"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
             />

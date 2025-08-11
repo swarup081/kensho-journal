@@ -6,9 +6,11 @@ import { supabase } from '@/lib/supabaseClient';
 import Spinner from '@/components/ui/Spinner';
 import StatCard from '@/components/admin/StatCard';
 import NewUserChart from '@/components/admin/NewUserChart';
+import PeakActivityChart from '@/components/admin/PeakActivityChart';
+import RetentionHeatmap from '@/components/admin/RetentionHeatmap';
 
 const AdminDashboardPage = () => {
-  // All state and hooks are now at the top level
+  // All state and hooks must be at the top level
   const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [analyticsData, setAnalyticsData] = useState(null);
@@ -84,7 +86,7 @@ const AdminDashboardPage = () => {
     }
   }, [userRole]);
 
-  // Redirect logic, runs after all hooks have been declared
+  // Redirect logic, now safe to run after all hooks have been declared
   useEffect(() => {
     if (!loading && userRole !== 'admin') {
       router.push('/');
@@ -117,14 +119,30 @@ const AdminDashboardPage = () => {
               <Spinner />
             </div>
           ) : analyticsData ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <StatCard title="Daily Active Users (DAU)" value={analyticsData.dau?.dau ?? 0} />
-              <StatCard title="Stickiness (DAU/MAU)" value={`${(analyticsData.stickiness?.stickiness ?? 0).toFixed(1)}%`} />
-              <StatCard title="Churn Rate (30d)" value={`${(analyticsData.churn?.churnRate ?? 0).toFixed(1)}%`} />
-              <StatCard title="Feature Adoption" value={`${(analyticsData.feature_adoption?.adoptionRate ?? 0).toFixed(1)}%`} />
-              <div className="md:col-span-2 lg:col-span-4">
-                <NewUserChart data={analyticsData.new_user_growth} />
+            <div className="space-y-6">
+              {/* Stat Cards Row 1 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <StatCard title="Daily Active Users (DAU)" value={analyticsData.dau?.dau ?? 0} />
+                <StatCard title="Stickiness (DAU/MAU)" value={`${(analyticsData.stickiness?.stickiness ?? 0).toFixed(1)}%`} />
+                <StatCard title="Avg Session Duration" value={`${(analyticsData.avg_session_duration?.avgSessionDuration / 60 ?? 0).toFixed(1)} min`} />
+                <StatCard title="Avg Entries Per User" value={(analyticsData.avg_entries_per_user?.avgEntriesPerUser ?? 0).toFixed(2)} />
               </div>
+              {/* Stat Cards Row 2 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                 <StatCard title="Churn Rate (30d)" value={`${(analyticsData.churn?.churnRate ?? 0).toFixed(1)}%`} />
+                 <StatCard title="Feature Adoption" value={`${(analyticsData.feature_adoption?.adoptionRate ?? 0).toFixed(1)}%`} />
+                 <StatCard title="Power Users (>10 entries/mo)" value={analyticsData.power_users?.count ?? 0} />
+              </div>
+              
+              {/* Charts */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <NewUserChart data={analyticsData.new_user_growth} />
+                <PeakActivityChart data={analyticsData.peak_activity} />
+              </div>
+
+              {/* Full-width Components */}
+              <RetentionHeatmap data={analyticsData.retention} />
+
             </div>
           ) : (
             <p className="text-center text-gray-400">Could not load analytics data.</p>
