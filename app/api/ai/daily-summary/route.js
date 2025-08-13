@@ -28,9 +28,9 @@ export async function POST(request) {
   }
 
   const startDate = new Date(date);
-  startDate.setHours(0, 0, 0, 0);
+  startDate.setUTCHours(0, 0, 0, 0);
   const endDate = new Date(date);
-  endDate.setHours(23, 59, 59, 999);
+  endDate.setUTCHours(23, 59, 59, 999);
   const dateString = startDate.toISOString().slice(0, 10);
 
   try {
