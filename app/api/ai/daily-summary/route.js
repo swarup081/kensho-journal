@@ -27,10 +27,9 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Missing date or userId' }, { status: 400 });
   }
 
-  const startDate = new Date(date);
-  startDate.setUTCHours(0, 0, 0, 0);
-  const endDate = new Date(date);
-  endDate.setUTCHours(23, 59, 59, 999);
+  // --- FIX: Define the 24-hour window based on the client's start-of-day timestamp ---
+  const startDate = new Date(date); // `date` is the start of the user's local day, in UTC
+  const endDate = new Date(startDate.getTime() + (24 * 60 * 60 * 1000) - 1); // 24 hours later
   const dateString = startDate.toISOString().slice(0, 10);
 
   try {
@@ -109,7 +108,7 @@ export async function POST(request) {
 
       Here are the individual summaries:
       ---
-      ${combinedSummaries}
+      \${combinedSummaries}
       ---
       Your response must be a single JSON object with a single key "summary". For example:
       {

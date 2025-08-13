@@ -29,13 +29,21 @@ export async function POST(request) {
 
   try {
     // 1. Create the journal entry and get the new ID
-    const { data: entryId, error: rpcError } = await supabase.rpc('create_journal_entry', {
-      entry_content: content,
-    });
+    const { data: newEntries, error: insertError } = await supabase
+      .from('journal_entries')
+      .insert({ content: content }) // RLS policy should enforce user_id
+      .select('id');
 
-    if (rpcError) {
-      console.error('Supabase RPC error:', rpcError);
+    if (insertError || !newEntries || newEntries.length === 0) {
+      console.error('Supabase insert error:', insertError);
       return NextResponse.json({ error: 'Failed to create journal entry.' }, { status: 500 });
+    }
+    const entryId = newEntries[0].id;
+
+    // --- FIX: Check for a valid entryId after creation ---
+    if (!entryId) {
+      console.error('Failed to retrieve ID for new journal entry.');
+      return NextResponse.json({ error: 'Failed to create journal entry; could not retrieve ID.' }, { status: 500 });
     }
 
     // 2. Get AI analysis
@@ -45,7 +53,7 @@ export async function POST(request) {
 
       Journal Entry:
       ---
-      ${content}
+      \${content}
       ---
 
       The response MUST be a single, valid JSON object with the following schema:
