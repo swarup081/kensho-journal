@@ -1,0 +1,87 @@
+1. The Name & Brand
+
+Name: Kensho Journal
+
+Tagline: The Journal That Talks Back.
+
+Domain: kenshojournal.app
+
+Logo: The minimalist, elegant archway with a single dot in the center, representing a sanctuary of insight.
+
+2. The Product Philosophy: "A Living Sanctuary"
+
+We are not building a sterile notes app. We are building a Digital Sanctuary that is alive with personality and color. It is a calm, intelligent, and private space designed for deep self-reflection. It should feel like a handcrafted, personal object that helps users understand their own minds.
+
+3. The UI/UX Philosophy: "Light for Welcome, Dark for Focus"
+
+Our app uses a strategic dual-theme approach to guide the user's experience.
+
+Light Theme (Public Pages): The Landing Page and Sign Up/In pages will use a light, airy, and inviting theme. This builds trust and feels welcoming to new users. The design is based on your mockup: a soft off-white background (#F9F9F7), abstract colorful shapes, and a vibrant gradient button.
+
+Dark Theme (The Private App): Once a user logs in, the interface shifts to a focused, immersive dark theme. This is the user's private sanctuary. It reduces eye strain and makes the colorful, data-driven visualizations the hero of the experience, inspired by your "Insights" and "Dashboard" mockups.
+
+4. The Core Product Strategy
+
+Our strategy is to win by being more insightful than the free alternatives and more intelligent than the paid ones.
+
+The Free Tier: "Master of Insight"
+
+Goal: To be the best free journaling tool on the market.
+
+Unique Selling Proposition (USP): We are better than default notes apps because we provide instant AI analysis after every entry. A user's thoughts are not just stored; they are reflected back with clarity.
+
+Core Free Features:
+
+A flawless, minimalist writing environment.
+
+Instant AI Analysis Card (Mood, Themes, Summary) after every entry.
+
+A 7-Day Mood Dashboard to visualize recent trends.
+
+The "On This Day" feature for daily nostalgia.
+
+The Premium Tier: "Master of Conversation"
+
+Goal: To offer a genuine "superpower" for self-reflection that is worth paying for.
+
+Unique Selling Proposition (USP): We are better than other premium journals because we offer a conversational AI. Users can have an intelligent dialogue with their entire life's journal.
+
+Core Premium Features:
+
+The Killer Feature: "Ask Your Journal." The ability to ask questions in natural language and get summarized answers based on past entries.
+
+Unlimited Dashboard & Analytics: The 7-day limit is removed, revealing long-term patterns.
+
+Automated Weekly/Monthly Reports.
+
+Full Data Export.
+
+5. The User Journey: The First Week is Everything
+
+Our user retention strategy is built on a powerful, guided first-week experience.
+
+The First Session ("Welcome Reflection"): We deliver an "Aha!" moment in the first 60 seconds with an interactive "Mood Intake" that demonstrates the app's intelligence before the user even writes a full entry.
+
+The First Week ("Mindful Momentum" Program): We guide the user through a 7-day journey of cascading rewards. We use daily emails and in-app unlocks to help them build the journaling habit and populate their dashboard, turning an empty app into a valuable, personal space.
+
+6. The Technology & Execution
+
+Tech Stack: Next.js (App Router), Supabase (Database & Auth), Tailwind CSS, Vercel (Deployment), OpenAI API.
+
+Project Structure: A clean, organized structure with separate folders for app (routes), components (UI), and lib (helpers).
+
+Development Plan: A focused, 12-week sprint plan designed for a solo developer dedicating 7-10 hours per week.
+
+Version Control: A public GitHub repository with an MIT License.
+
+7. The Business Goal: Sustainability
+
+Our primary goal is to create a self-sustaining product.
+
+Price: ₹99 per month.
+
+Target Conversion Rate: 1-2% of monthly active users.
+
+The Milestone: Reaching ~25 paying subscribers to cover the monthly operational costs.
+
+This document is your single source of truth. Every feature you build and every line of code you write should serve this mission.
