@@ -145,7 +145,7 @@ const CookiesContent = () => (
 export default function SignUpForm() {
   const [openModal, setOpenModal] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(useSearchParams().get('message'));
+  const [message, setMessage] = useState(useSearchParams().get('message') ? { type: 'error', text: useSearchParams().get('message') } : null);
   const router = useRouter();
 
   const handleSignUpSubmit = async (event) => {
@@ -156,11 +156,11 @@ export default function SignUpForm() {
     const formData = new FormData(event.currentTarget);
     const result = await signup(formData);
 
+    setLoading(false);
     if (result.success) {
-      router.push(result.redirect);
+      setMessage({ type: 'success', text: result.message });
     } else {
-      setMessage(result.message);
-      setLoading(false);
+      setMessage({ type: 'error', text: result.message });
     }
   };
 
@@ -207,9 +207,13 @@ export default function SignUpForm() {
               .
             </p>
             {message && (
-              <div className="flex items-start gap-3 text-sm font-semibold text-red-600 bg-red-500/10 p-3 rounded-lg border border-red-500/20">
+              <div className={`flex items-start gap-3 text-sm font-semibold p-3 rounded-lg border ${
+                message.type === 'error' 
+                  ? 'text-red-600 bg-red-500/10 border-red-500/20' 
+                  : 'text-green-600 bg-green-500/10 border-green-500/20'
+              }`}>
                 <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                <span className="flex-1">{message}</span>
+                <span className="flex-1">{message.text}</span>
               </div>
             )}
             <button
