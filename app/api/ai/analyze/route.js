@@ -37,7 +37,9 @@ export async function POST(request) {
     // 1. Create the journal entry and get the new ID
     const { data: newEntries, error: insertError } = await supabase
       .from('journal_entries')
+
       .insert({ content: content, user_id: userId }) // RLS policy should enforce user_id
+
       .select('id');
 
     if (insertError || !newEntries || newEntries.length === 0) {
@@ -59,7 +61,7 @@ export async function POST(request) {
 
       Journal Entry:
       ---
-      ${content}
+      \${content}
       ---
 
       The response MUST be a single, valid JSON object with the following schema:
