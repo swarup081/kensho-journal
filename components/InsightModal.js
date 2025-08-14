@@ -89,10 +89,10 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 30 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="w-full max-w-2xl bg-black/20 border border-gray-800/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+            className="w-full max-w-2xl bg-black/20 border border-gray-800/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[calc(100vh-8rem)] md:max-h-[calc(100vh-4rem)]"
             onClick={(e) => e.stopPropagation()}
           >
-            <header className="p-6 text-center border-b border-gray-800/50 relative">
+            <header className="p-6 text-center border-b border-gray-800/50 relative flex-shrink-0">
               <h1 className="text-2xl font-bold text-gray-100" style={{ fontFamily: "'Lora', serif" }}>
                 {analysis?.error ? "Analysis Failed" : analysis ? "Your Insight" : "Analyzing..."}
               </h1>
@@ -104,7 +104,8 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
               </button>
             </header>
 
-            <AnimatePresence mode="wait">
+            <div className="overflow-y-auto scrollbar-hide">
+                <AnimatePresence mode="wait">
               {!analysis ? (
                 <motion.div key="skeleton" {...motionProps}>
                   <InsightModalSkeleton />
@@ -180,6 +181,7 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
                 </motion.div>
               )}
             </AnimatePresence>
+            </div>
           </motion.div>
         </motion.div>
       )}
