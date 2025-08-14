@@ -7,11 +7,13 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function POST(request) {
-  const { content } = await request.json();
+export const revalidate = 0;
 
-  if (!content) {
-    return NextResponse.json({ error: 'Missing content' }, { status: 400 });
+export async function POST(request) {
+  const { content, userId } = await request.json();
+
+  if (!content || !userId) {
+    return NextResponse.json({ error: 'Missing content or userId' }, { status: 400 });
   }
   
   const cookieStore = cookies();
@@ -23,6 +25,12 @@ export async function POST(request) {
         get(name) {
           return cookieStore.get(name)?.value;
         },
+        set(name, value, options) {
+          cookieStore.set({ name, value, ...options });
+        },
+        remove(name, options) {
+          cookieStore.set({ name, value: '', ...options });
+        },
       },
     }
   );
@@ -31,7 +39,9 @@ export async function POST(request) {
     // 1. Create the journal entry and get the new ID
     const { data: newEntries, error: insertError } = await supabase
       .from('journal_entries')
-      .insert({ content: content }) // RLS policy should enforce user_id
+
+      .insert({ content: content, user_id: userId }) // RLS policy should enforce user_id
+
       .select('id');
 
     if (insertError || !newEntries || newEntries.length === 0) {

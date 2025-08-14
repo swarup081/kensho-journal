@@ -124,12 +124,12 @@ export default function DayDetailModal({ entries, isOpen, onClose, dailyAnalysis
             className="w-full max-w-3xl bg-black/20 border border-gray-800/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
-            <header className="p-6 flex-shrink-0">
+            <header className="p-6 flex-shrink-0 relative">
               <h1 className="text-3xl font-bold text-gray-100" style={{ fontFamily: "'Lora', serif" }}>
                 Daily Digest
               </h1>
               <p className="text-gray-400 mt-1">{formattedDate}</p>
-              <button onClick={onClose} className="absolute top-6 right-6 p-1 rounded-full text-gray-400 hover:bg-gray-800 transition-colors">
+              <button onClick={onClose} className="absolute top-4 right-4 p-1 rounded-full text-gray-400 hover:bg-gray-800 transition-colors">
                 <X size={20} />
               </button>
             </header>
