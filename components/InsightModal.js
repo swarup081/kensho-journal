@@ -89,10 +89,10 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 30 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="w-full max-w-2xl bg-black/20 border border-gray-800/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+            className="w-full max-w-2xl bg-black/20 border border-gray-800/50 rounded-2xl shadow-2xl flex flex-col max-h-[calc(100vh-7rem)]"
             onClick={(e) => e.stopPropagation()}
           >
-            <header className="p-6 text-center border-b border-gray-800/50 relative">
+            <header className="p-6 text-center border-b border-gray-800/50 relative flex-shrink-0">
               <h1 className="text-2xl font-bold text-gray-100" style={{ fontFamily: "'Lora', serif" }}>
                 {analysis?.error ? "Analysis Failed" : analysis ? "Your Insight" : "Analyzing..."}
               </h1>
@@ -104,82 +104,84 @@ export default function InsightModal({ analysis, isOpen, onClose }) {
               </button>
             </header>
 
-            <AnimatePresence mode="wait">
-              {!analysis ? (
-                <motion.div key="skeleton" {...motionProps}>
-                  <InsightModalSkeleton />
-                </motion.div>
-              ) : analysis.error ? (
-                <motion.div key="error" {...motionProps} className="p-8 text-center">
-                    <p className="text-red-400">{analysis.error}</p>
-                    <button
-                        onClick={onClose}
-                        className="mt-6 bg-purple-600/50 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-purple-600/80 transition-all duration-300"
-                    >
-                        Close
-                    </button>
-                </motion.div>
-              ) : (
-                <motion.div key="content" {...motionProps}>
-                  <div className="p-8 space-y-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-4">
-                        <h3 className="font-semibold text-purple-300">Summary</h3>
-                        <p className="text-gray-300 italic text-sm">&quot;{analysis.summary}&quot;</p>
-                        <h3 className="font-semibold text-purple-300 pt-4">Keywords & Themes</h3>
-                        <div className="flex flex-wrap gap-2">
-                          {analysis.keywords.map(keyword => ( <span key={keyword} className="bg-gray-700/50 text-gray-300 text-xs font-semibold px-3 py-1 rounded-full">{keyword}</span> ))}
+            <div className="overflow-y-auto">
+              <AnimatePresence mode="wait">
+                {!analysis ? (
+                  <motion.div key="skeleton" {...motionProps}>
+                    <InsightModalSkeleton />
+                  </motion.div>
+                ) : analysis.error ? (
+                  <motion.div key="error" {...motionProps} className="p-8 text-center">
+                      <p className="text-red-400">{analysis.error}</p>
+                      <button
+                          onClick={onClose}
+                          className="mt-6 bg-purple-600/50 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-purple-600/80 transition-all duration-300"
+                      >
+                          Close
+                      </button>
+                  </motion.div>
+                ) : (
+                  <motion.div key="content" {...motionProps}>
+                    <div className="p-8 space-y-8">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-4">
+                          <h3 className="font-semibold text-purple-300">Summary</h3>
+                          <p className="text-gray-300 italic text-sm">&quot;{analysis.summary}&quot;</p>
+                          <h3 className="font-semibold text-purple-300 pt-4">Keywords & Themes</h3>
+                          <div className="flex flex-wrap gap-2">
+                            {analysis.keywords.map(keyword => ( <span key={keyword} className="bg-gray-700/50 text-gray-300 text-xs font-semibold px-3 py-1 rounded-full">{keyword}</span> ))}
+                          </div>
+                        </div>
+                        <div className="bg-gray-900/40 p-4 rounded-xl">
+                          <h3 className="font-semibold text-purple-300 mb-2 text-center">Emotion Flow</h3>
+                          {isClient && <EmotionChart data={analysis.emotions} />}
                         </div>
                       </div>
-                      <div className="bg-gray-900/40 p-4 rounded-xl">
-                        <h3 className="font-semibold text-purple-300 mb-2 text-center">Emotion Flow</h3>
-                        {isClient && <EmotionChart data={analysis.emotions} />}
-                      </div>
-                    </div>
-                    <div className="text-center border-t border-gray-800/50 pt-8">
-                      <p className="text-lg text-gray-300 italic" style={{ fontFamily: "'Lora', serif" }}>
-                        &quot;{analysis.insightfulQuestion}&quot;
-                      </p>
-                      <div className="mt-6">
-                        {!isReflecting ? (
-                          <button
-                            onClick={() => setIsReflecting(true)}
-                            className="bg-purple-600/50 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-purple-600/80 transition-all duration-300"
-                          >
-                            Reflect on this
-                          </button>
-                        ) : (
-                          <div className="w-full max-w-lg mx-auto">
-                            <textarea
-                              value={reflection}
-                              onChange={(e) => setReflection(e.target.value)}
-                              placeholder="Write your thoughts..."
-                              className="w-full p-3 bg-gray-900/60 border border-gray-700 rounded-lg text-gray-300 focus:ring-2 focus:ring-purple-500 focus:outline-none transition resize-none"
-                              rows={3}
-                            />
-                            <div className="mt-3 flex justify-end gap-3">
-                              <button
-                                onClick={() => setIsReflecting(false)}
-                                className="text-gray-400 hover:text-white transition-colors"
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                onClick={handleSaveReflection}
-                                disabled={isSaving || isSaved}
-                                className="bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition-all duration-300 disabled:opacity-60"
-                              >
-                                {isSaving ? 'Saving...' : isSaved ? 'Saved!' : 'Save Reflection'}
-                              </button>
+                      <div className="text-center border-t border-gray-800/50 pt-8">
+                        <p className="text-lg text-gray-300 italic" style={{ fontFamily: "'Lora', serif" }}>
+                          &quot;{analysis.insightfulQuestion}&quot;
+                        </p>
+                        <div className="mt-6">
+                          {!isReflecting ? (
+                            <button
+                              onClick={() => setIsReflecting(true)}
+                              className="bg-purple-600/50 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-purple-600/80 transition-all duration-300"
+                            >
+                              Reflect on this
+                            </button>
+                          ) : (
+                            <div className="w-full max-w-lg mx-auto">
+                              <textarea
+                                value={reflection}
+                                onChange={(e) => setReflection(e.target.value)}
+                                placeholder="Write your thoughts..."
+                                className="w-full p-3 bg-gray-900/60 border border-gray-700 rounded-lg text-gray-300 focus:ring-2 focus:ring-purple-500 focus:outline-none transition resize-none"
+                                rows={3}
+                              />
+                              <div className="mt-3 flex justify-end gap-3">
+                                <button
+                                  onClick={() => setIsReflecting(false)}
+                                  className="text-gray-400 hover:text-white transition-colors"
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  onClick={handleSaveReflection}
+                                  disabled={isSaving || isSaved}
+                                  className="bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition-all duration-300 disabled:opacity-60"
+                                >
+                                  {isSaving ? 'Saving...' : isSaved ? 'Saved!' : 'Save Reflection'}
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </motion.div>
         </motion.div>
       )}
