@@ -143,9 +143,10 @@ const CookiesContent = () => (
 );
 
 export default function SignUpForm() {
+  const searchParams = useSearchParams();
   const [openModal, setOpenModal] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(useSearchParams().get('message') ? { type: 'error', text: useSearchParams().get('message') } : null);
+  const [message, setMessage] = useState(searchParams.get('message') ? { type: 'error', text: searchParams.get('message') } : null);
   const router = useRouter();
 
   const handleSignUpSubmit = async (event) => {
