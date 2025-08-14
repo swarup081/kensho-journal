@@ -73,7 +73,7 @@ const JournalPage = () => {
   
   const handleSaveEntry = async () => {
     const markdownContent = convertToMarkdown(entryHtml);
-    if (markdownContent.trim() === '' || !user || isSaving) return;
+    if (markdownContent.trim() === '' || !user?.id || isSaving) return;
 
     setIsSaving(true);
     setModalAnalysis(null);
@@ -83,7 +83,7 @@ const JournalPage = () => {
       const analysisResponse = await fetch('/api/ai/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: markdownContent }),
+        body: JSON.stringify({ content: markdownContent, userId: user.id }),
       });
 
       if (!analysisResponse.ok) {

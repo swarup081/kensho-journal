@@ -7,8 +7,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const revalidate = 0;
-
 export async function POST(request) {
   const { content, userId } = await request.json();
 
@@ -63,7 +61,7 @@ export async function POST(request) {
 
       Journal Entry:
       ---
-      \${content}
+      ${content}
       ---
 
       The response MUST be a single, valid JSON object with the following schema:
