@@ -83,7 +83,7 @@ const JournalPage = () => {
       const analysisResponse = await fetch('/api/ai/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: markdownContent }),
+        body: JSON.stringify({ content: markdownContent, userId: user.id }),
       });
 
       if (!analysisResponse.ok) {
