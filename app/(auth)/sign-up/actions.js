@@ -1,6 +1,5 @@
 'use server';
 
-import { headers } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 
 const isInvalidEmail = (email) => {
@@ -18,7 +17,7 @@ export async function signup(formData) {
   const email = formData.get('email');
   const phone = formData.get('phone');
   const password = formData.get('password');
-  
+
   if (!name || !email || !phone || !password) {
     return { success: false, message: 'All fields are required.' };
   }
@@ -32,11 +31,6 @@ export async function signup(formData) {
     return { success: false, message: 'Password must be at least 6 characters long.' };
   }
 
-  const headersList = headers();
-  const host = headersList.get('x-forwarded-host') || headersList.get('host');
-  const protocol = headersList.get('x-forwarded-proto') || (host?.startsWith('localhost') ? 'http' : 'https');
-  const baseURL = `${protocol}://${host}`;
-
   const supabase = createClient();
 
   const { data, error } = await supabase.auth.signUp({
@@ -48,7 +42,7 @@ export async function signup(formData) {
         phone,
         avatar_url: `https://placehold.co/128x128/A78BFA/FFFFFF/png?text=${name.charAt(0)}`
       },
-      emailRedirectTo: `${baseURL}/sign-in`
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/` 
     }
   });
 
@@ -60,5 +54,5 @@ export async function signup(formData) {
     return { success: false, message: 'Could not create user. Please try again.' };
   }
 
-  return { success: true, message: 'Check your email for a confirmation link to log in.' };
+  return { success: true, redirect: `/verify-otp?email=${email}` };
 }
