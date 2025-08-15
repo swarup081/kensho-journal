@@ -42,7 +42,7 @@ export async function signup(formData) {
         phone,
         avatar_url: `https://placehold.co/128x128/A78BFA/FFFFFF/png?text=${name.charAt(0)}`
       },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/` 
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/journal` 
     }
   });
 
