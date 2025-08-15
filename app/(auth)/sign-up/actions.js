@@ -33,8 +33,8 @@ export async function signup(formData) {
   }
 
   const headersList = headers();
-  const host = headersList.get('host');
-  const protocol = host?.startsWith('localhost') ? 'http' : 'https';
+  const host = headersList.get('x-forwarded-host') || headersList.get('host');
+  const protocol = headersList.get('x-forwarded-proto') || (host?.startsWith('localhost') ? 'http' : 'https');
   const baseURL = `${protocol}://${host}`;
 
   const supabase = createClient();
