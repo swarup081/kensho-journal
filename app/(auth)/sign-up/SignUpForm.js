@@ -45,7 +45,7 @@ const TermsContent = () => (
 
       <h3>Disclaimers and Limitation of Liability</h3>
       <ul>
-          <li><strong>AI Features:</strong> The Service may use third-party AI models (e.g., from OpenAI) to generate insights. This content is for informational purposes only and is not professional advice. We are not liable for any errors, omissions, or actions taken based on AI-generated content.</li>
+          <li><strong>AI Features:</strong> The Service may use third-party AI models to generate insights. This content is for informational purposes only and is not professional advice. We are not liable for any errors, omissions, or actions taken based on AI-generated content.</li>
           <li><strong>Third-Party Services:</strong> The Service relies on third-party platforms like Supabase for backend infrastructure. We are not responsible for service interruptions or data security breaches originating from these third-party providers.</li>
           <li><strong>&quot;As-Is&quot; Service:</strong> The Service is provided on an &quot;as-is&quot; basis. We are not liable for any direct, indirect, or consequential damages arising from your use of the Service.</li>
       </ul>
