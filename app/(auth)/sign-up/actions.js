@@ -1,5 +1,6 @@
 'use server';
 
+import { headers } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 
 const isInvalidEmail = (email) => {
@@ -31,6 +32,11 @@ export async function signup(formData) {
     return { success: false, message: 'Password must be at least 6 characters long.' };
   }
 
+  const headersList = headers();
+  const host = headersList.get('host');
+  const protocol = host?.startsWith('localhost') ? 'http' : 'https';
+  const baseURL = `${protocol}://${host}`;
+
   const supabase = createClient();
 
   const { data, error } = await supabase.auth.signInWithOtp({
@@ -41,7 +47,7 @@ export async function signup(formData) {
         phone,
         avatar_url: `https://placehold.co/128x128/A78BFA/FFFFFF/png?text=${name.charAt(0)}`
       },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/callback?next=/journal&email=${encodeURIComponent(email)}`
+      emailRedirectTo: `${baseURL}/api/auth/callback?next=/journal&email=${encodeURIComponent(email)}`
     }
   });
 

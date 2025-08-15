@@ -11,7 +11,7 @@ export async function GET(request) {
   if (token_hash && type && email) {
     const supabase = createClient();
     const { error } = await supabase.auth.verifyOtp({
-      type: 'magiclink',
+      type,
       token_hash,
       email,
     });
