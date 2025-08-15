@@ -39,15 +39,16 @@ export async function signup(formData) {
 
   const supabase = createClient();
 
-  const { data, error } = await supabase.auth.signInWithOtp({
+  const { data, error } = await supabase.auth.signUp({
     email,
+    password,
     options: {
       data: {
         name,
         phone,
         avatar_url: `https://placehold.co/128x128/A78BFA/FFFFFF/png?text=${name.charAt(0)}`
       },
-      emailRedirectTo: `${baseURL}/api/auth/callback?next=/journal&email=${encodeURIComponent(email)}`
+      emailRedirectTo: `${baseURL}/sign-in`
     }
   });
 
@@ -59,5 +60,5 @@ export async function signup(formData) {
     return { success: false, message: 'Could not create user. Please try again.' };
   }
 
-  return { success: true, message: 'Check your email for a magic link to log in.' };
+  return { success: true, message: 'Check your email for a confirmation link to log in.' };
 }
