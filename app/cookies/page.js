@@ -19,7 +19,7 @@ export default function CookiesPage() {
         </button>
 
         <h1 className="text-3xl font-bold text-gray-900 mb-4">Cookie Policy</h1>
-        <p className="text-sm text-gray-500 mb-8">Last Updated: August 2, 2025</p>
+        <p className="text-sm text-gray-500 mb-8">Last Updated: August 11, 2025</p>
 
         <div className="space-y-6 text-gray-700 prose max-w-none">
           <p>
