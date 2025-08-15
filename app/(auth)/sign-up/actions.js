@@ -54,5 +54,14 @@ export async function signup(formData) {
     return { success: false, message: 'Could not create user. Please try again.' };
   }
 
+  // When email confirmation is disabled, user is returned directly.
+  // When email confirmation is enabled, user is returned and identities array is empty.
+  if (data.user && data.user.identities && data.user.identities.length === 0) {
+    return { 
+      success: false, 
+      message: 'A user has been created, but the confirmation email could not be sent. Please contact support.' 
+    };
+  }
+  
   return { success: true, redirect: `/verify-otp?email=${email}` };
 }

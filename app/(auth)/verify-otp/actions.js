@@ -18,7 +18,7 @@ export async function resendVerificationEmail(formData) {
 
   if (error) {
     console.error('Resend Error:', error);
-    return { error: 'Could not resend email. Please try again shortly.' };
+    return { error: 'Could not resend email. This might be due to a configuration issue. Please contact support if the problem persists.' };
   }
 
   return { success: 'Verification email sent successfully!' };
